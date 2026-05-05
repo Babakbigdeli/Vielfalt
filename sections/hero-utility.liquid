@@ -1,15 +1,35 @@
 {{ 'section-hero-utility.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign fetch_priority = 'auto'
+  assign loading_strategy = 'lazy'
+  if section.index == 1
+    assign fetch_priority = 'high'
+    assign loading_strategy = 'eager'
+  endif
+-%}
+
 {%- style -%}
-  #HeroUtility-{{ section.id }} .hero-utility__inner {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  #HeroUtility-{{ section.id }} {
+    --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
   }
 {%- endstyle -%}
 
 <div
   id="HeroUtility-{{ section.id }}"
-  class="hero-utility hero-utility--align-{{ section.settings.content_alignment }}{% if section.settings.background_image != blank %} hero-utility--has-image{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  class="hero-utility color-{{ section.settings.color_scheme }} gradient hero-utility--align-{{ section.settings.content_alignment }}{% if section.settings.background_image != blank %} hero-utility--has-image{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
 >
   {%- if section.settings.background_image != blank -%}
     <div class="hero-utility__media">
@@ -19,22 +39,24 @@
         | image_tag:
           sizes: '100vw',
           widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
-          fetchpriority: 'high',
-          loading: 'eager'
+          fetchpriority: fetch_priority,
+          loading: loading_strategy
       }}
-      <div
-        class="hero-utility__overlay"
-        style="background-color: rgba(0,0,0,{{ section.settings.overlay_opacity | divided_by: 100.0 }});"
-        aria-hidden="true"
-      ></div>
+      <div class="hero-utility__overlay" aria-hidden="true"></div>
     </div>
   {%- endif -%}
 
-  <div class="hero-utility__inner page-width">
+  <div class="hero-utility__inner page-width section-{{ section.id }}-padding">
     {%- if section.settings.heading != blank -%}
-      <h1 class="hero-utility__heading {{ section.settings.heading_size }}">
-        {{ section.settings.heading }}
-      </h1>
+      {%- if section.settings.heading_level == 'h2' -%}
+        <h2 class="hero-utility__heading {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+      {%- else -%}
+        <h1 class="hero-utility__heading {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h1>
+      {%- endif -%}
     {%- endif -%}
 
     {%- if section.settings.subheading != blank -%}
@@ -100,6 +122,23 @@
       "default": "h1"
     },
     {
+      "type": "select",
+      "id": "heading_level",
+      "label": "Heading HTML element",
+      "info": "Use H1 only once per page. Choose H2 when another H1 already exists on the page.",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        }
+      ],
+      "default": "h1"
+    },
+    {
       "type": "text",
       "id": "subheading",
       "label": "Subheading",
@@ -133,11 +172,19 @@
       "step": 10,
       "unit": "%",
       "label": "Image overlay opacity",
+      "info": "Only applies when a background image is set.",
       "default": 50
     },
     {
       "type": "header",
       "content": "Layout"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "info": "Controls background and text color when no background image is used.",
+      "default": "scheme-1"
     },
     {
       "type": "select",

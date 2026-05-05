@@ -4,7 +4,6 @@
   align-items: center;
   min-height: 34rem;
   overflow: hidden;
-  background-color: rgb(var(--color-background));
 }
 
 .hero-utility--has-image {
@@ -26,6 +25,7 @@
 .hero-utility__overlay {
   position: absolute;
   inset: 0;
+  background-color: rgba(0, 0, 0, var(--hero-overlay-opacity, 0.5));
 }
 
 .hero-utility__inner {
