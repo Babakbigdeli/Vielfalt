@@ -1,0 +1,323 @@
+{{ 'section-category-grid.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  #CategoryGrid-{{ section.id }} {
+    --category-columns-mobile: {{ section.settings.columns_mobile }};
+    --category-columns-desktop: {{ section.settings.columns_desktop }};
+  }
+{%- endstyle -%}
+
+<div
+  id="CategoryGrid-{{ section.id }}"
+  class="category-grid color-{{ section.settings.color_scheme }} gradient"
+>
+  <div class="category-grid__wrapper page-width section-{{ section.id }}-padding">
+    {%- if section.settings.title != blank or section.settings.show_view_all -%}
+      <div class="category-grid__header">
+        {%- if section.settings.title != blank -%}
+          <h2
+            class="category-grid__title inline-richtext{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          >
+            {{ section.settings.title }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.show_view_all and section.settings.view_all_link != blank -%}
+          <a
+            href="{{ section.settings.view_all_link }}"
+            class="category-grid__view-all link"
+            {% if settings.animations_reveal_on_scroll %}
+              data-cascade
+            {% endif %}
+          >
+            {{ section.settings.view_all_label | default: 'Alle anzeigen' | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <ul
+      class="category-grid__list list-unstyled{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+      role="list"
+      {% if settings.animations_reveal_on_scroll %}
+        data-cascade
+      {% endif %}
+    >
+      {%- for block in section.blocks -%}
+        <li
+          class="category-grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {{ block.shopify_attributes }}
+          {% if settings.animations_reveal_on_scroll %}
+            style="--animation-order: {{ forloop.index }};"
+          {% endif %}
+        >
+          <a
+            {% if block.settings.link != blank %}
+              href="{{ block.settings.link }}"
+            {% else %}
+              role="link" aria-disabled="true"
+            {% endif %}
+            class="category-card"
+          >
+            <div class="category-card__image-wrapper category-card__image-wrapper--{{ section.settings.image_ratio }}">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 800
+                  | image_tag:
+                    widths: '200, 300, 400, 600, 800',
+                    sizes: '(min-width: 990px) calc((var(--page-width, 1200px) - 4rem) / var(--category-columns-desktop, 4)), (min-width: 750px) calc((100vw - 4rem) / 3), calc((100vw - 3rem) / var(--category-columns-mobile, 2))',
+                    loading: 'lazy',
+                    class: 'category-card__image'
+                }}
+              {%- else -%}
+                <div class="category-card__placeholder">
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {%- endif -%}
+            </div>
+
+            <div class="category-card__info">
+              {%- if block.settings.title != blank -%}
+                <span class="category-card__title">{{ block.settings.title | escape }}</span>
+              {%- endif -%}
+              {%- if block.settings.product_count != blank -%}
+                <span class="category-card__count">{{ block.settings.product_count | escape }}</span>
+              {%- endif -%}
+            </div>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Category Grid",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 12,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Section heading",
+      "default": "Kategorien"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View all' link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "'View all' label",
+      "default": "Alle Produkte durchsuchen"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "'View all' link"
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "6",
+          "label": "6"
+        }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {
+          "value": "square",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait (4:5)"
+        }
+      ],
+      "default": "square"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_item",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Kategorie"
+        },
+        {
+          "type": "text",
+          "id": "product_count",
+          "label": "Product count",
+          "info": "Optional. Example: 245 Produkte"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Grid",
+      "settings": {
+        "title": "Kategorien",
+        "show_view_all": true,
+        "view_all_label": "Alle Produkte durchsuchen",
+        "columns_desktop": "4",
+        "columns_mobile": "2",
+        "image_ratio": "square"
+      },
+      "blocks": [
+        {
+          "type": "category_item",
+          "settings": {
+            "title": "Batterien & Akku",
+            "product_count": "245 Produkte"
+          }
+        },
+        {
+          "type": "category_item",
+          "settings": {
+            "title": "Werkzeuge",
+            "product_count": "189 Produkte"
+          }
+        },
+        {
+          "type": "category_item",
+          "settings": {
+            "title": "Elektrokomponenten",
+            "product_count": "312 Produkte"
+          }
+        },
+        {
+          "type": "category_item",
+          "settings": {
+            "title": "Haushaltsgeräte",
+            "product_count": "156 Produkte"
+          }
+        },
+        {
+          "type": "category_item",
+          "settings": {
+            "title": "Heizung & Sanitär",
+            "product_count": "98 Produkte"
+          }
+        },
+        {
+          "type": "category_item",
+          "settings": {
+            "title": "Beleuchtung",
+            "product_count": "134 Produkte"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
