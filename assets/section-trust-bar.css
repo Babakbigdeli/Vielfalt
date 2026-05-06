@@ -38,10 +38,8 @@
   border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.1);
 }
 
-.trust-bar--dividers .trust-bar__item:nth-child(odd):last-child,
-.trust-bar--dividers .trust-bar__item:nth-last-child(-n+2):nth-child(odd) ~ .trust-bar__item,
-.trust-bar--dividers .trust-bar__list > .trust-bar__item:last-child,
-.trust-bar--dividers .trust-bar__list > .trust-bar__item:nth-last-child(2):nth-child(odd) {
+.trust-bar--dividers .trust-bar__item:last-child,
+.trust-bar--dividers .trust-bar__item:nth-last-child(2):nth-child(odd) {
   border-bottom: none;
 }
 

@@ -128,10 +128,16 @@
       "name": "Trust item",
       "settings": [
         {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom icon image",
+          "info": "Upload a custom icon. When set, overrides the icon selector below."
+        },
+        {
           "type": "select",
           "id": "icon",
           "label": "Icon",
-          "info": "Ignored if a custom image is uploaded above.",
+          "info": "Used when no custom image is uploaded above.",
           "options": [
             {
               "value": "none",
@@ -183,12 +189,6 @@
             }
           ],
           "default": "truck"
-        },
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Custom icon image",
-          "info": "Upload a custom icon. Overrides the icon selector above."
         },
         {
           "type": "text",
