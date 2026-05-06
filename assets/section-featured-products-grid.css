@@ -1,0 +1,21 @@
+.featured-products-grid__header {
+  margin-bottom: 2.4rem;
+}
+
+.featured-products-grid__title {
+  margin: 0;
+}
+
+.featured-products-grid__view-all-button {
+  margin-top: 3.2rem;
+}
+
+@media screen and (max-width: 749px) {
+  .featured-products-grid__header {
+    margin-bottom: 2rem;
+  }
+
+  .featured-products-grid__view-all-button {
+    margin-top: 2.4rem;
+  }
+}
