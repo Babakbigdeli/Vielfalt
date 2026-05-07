@@ -121,10 +121,102 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "hero_utility_jWe3C3": {
+      "type": "hero-utility",
+      "name": "Hero Utility",
+      "settings": {
+        "heading": "Technik & Haushalt – alles aus einer Hand",
+        "heading_size": "h1",
+        "heading_level": "h1",
+        "subheading": "Über 1.000 Produkte: Batterien, Werkzeuge, Elektrokomponenten und mehr.",
+        "button_label": "Jetzt entdecken",
+        "button_link": "",
+        "overlay_opacity": 50,
+        "color_scheme": "",
+        "content_alignment": "center",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "trust_bar_R8ieUD": {
+      "type": "trust-bar",
+      "blocks": {
+        "trust_item_NdHVHz": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "truck",
+            "heading": "Schneller Versand",
+            "description": "Lieferung in 1–3 Werktagen"
+          }
+        },
+        "trust_item_redxmL": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "lock",
+            "heading": "Sichere Zahlung",
+            "description": "SSL-verschlüsselt & DSGVO-konform"
+          }
+        },
+        "trust_item_KYhHiD": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "return",
+            "heading": "30 Tage Rückgabe",
+            "description": "Kostenlose Rücksendung"
+          }
+        },
+        "trust_item_xK6EiR": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "price_tag",
+            "heading": "Flexible Zahlung",
+            "description": "PayPal, Kreditkarte, SEPA"
+          }
+        }
+      },
+      "block_order": [
+        "trust_item_NdHVHz",
+        "trust_item_redxmL",
+        "trust_item_KYhHiD",
+        "trust_item_xK6EiR"
+      ],
+      "name": "Trust Bar",
+      "settings": {
+        "show_dividers": true,
+        "color_scheme": "scheme-2",
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "featured_products_grid_tkpgWe": {
+      "type": "featured-products-grid",
+      "name": "Featured Products Grid",
+      "settings": {
+        "collection": "",
+        "products_to_show": 8,
+        "title": "Bestseller",
+        "heading_size": "h2",
+        "show_view_all": true,
+        "view_all_label": "Alle anzeigen",
+        "image_ratio": "adapt",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_desktop": "4",
+        "columns_mobile": "2",
+        "color_scheme": "",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
     }
   },
   "order": [
     "image_banner",
-    "category_grid_ApJJk6"
+    "hero_utility_jWe3C3",
+    "category_grid_ApJJk6",
+    "trust_bar_R8ieUD",
+    "featured_products_grid_tkpgWe"
   ]
 }
