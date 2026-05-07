@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "image_banner": {
@@ -29,47 +38,93 @@
       "settings": {
         "image_overlay_opacity": 40,
         "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
         "image_behavior": "none",
+        "desktop_content_position": "bottom-center",
         "desktop_content_alignment": "center",
+        "show_text_box": false,
         "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
         "stack_images_on_mobile": false,
+        "mobile_content_alignment": "center",
         "show_text_below": false
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "category_grid_ApJJk6": {
+      "type": "category-grid",
+      "blocks": {
+        "category_item_aKdTUw": {
+          "type": "category_item",
+          "settings": {
+            "title": "Batterien & Akku",
+            "product_count": "245 Produkte",
+            "link": ""
+          }
+        },
+        "category_item_U7HeBy": {
+          "type": "category_item",
+          "settings": {
+            "title": "Werkzeuge",
+            "product_count": "189 Produkte",
+            "link": ""
+          }
+        },
+        "category_item_kEbhf8": {
+          "type": "category_item",
+          "settings": {
+            "title": "Elektrokomponenten",
+            "product_count": "312 Produkte",
+            "link": ""
+          }
+        },
+        "category_item_V3bpxp": {
+          "type": "category_item",
+          "settings": {
+            "title": "Haushaltsgeräte",
+            "product_count": "156 Produkte",
+            "link": ""
+          }
+        },
+        "category_item_zdjCFr": {
+          "type": "category_item",
+          "settings": {
+            "title": "Heizung & Sanitär",
+            "product_count": "98 Produkte",
+            "link": ""
+          }
+        },
+        "category_item_BfyjFG": {
+          "type": "category_item",
+          "settings": {
+            "title": "Beleuchtung",
+            "product_count": "134 Produkte",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_item_aKdTUw",
+        "category_item_U7HeBy",
+        "category_item_kEbhf8",
+        "category_item_V3bpxp",
+        "category_item_zdjCFr",
+        "category_item_BfyjFG"
+      ],
+      "name": "Category Grid",
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
-        "color_scheme": "scheme-1",
-        "full_width": false,
+        "title": "Kategorien",
         "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
+        "view_all_label": "Alle Produkte durchsuchen",
+        "view_all_link": "",
+        "columns_desktop": "4",
         "columns_mobile": "2",
-        "padding_top": 44,
+        "image_ratio": "square",
+        "color_scheme": "",
+        "padding_top": 36,
         "padding_bottom": 36
       }
     }
   },
   "order": [
     "image_banner",
-    "featured_collection"
+    "category_grid_ApJJk6"
   ]
 }
