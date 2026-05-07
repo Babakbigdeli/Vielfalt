@@ -98,3 +98,15 @@
   margin-top: 0.2rem;
   color: rgba(var(--color-foreground), 0.7);
 }
+
+.price {
+  letter-spacing: 0.04rem;
+}
+
+.price--on-sale .price-item--sale {
+  font-weight: 600;
+}
+
+.price--on-sale .price-item--regular {
+  color: rgba(var(--color-foreground), 0.45);
+}
