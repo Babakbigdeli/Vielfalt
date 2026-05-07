@@ -97,3 +97,37 @@
 .collection__view-all a:not(.link) {
   margin-top: 1rem;
 }
+
+@media screen and (min-width: 990px) {
+  .facets-vertical .facets-wrapper {
+    align-self: flex-start;
+    position: sticky;
+    top: 2rem;
+  }
+
+  .facets-vertical .product-grid-container {
+    padding-left: 2.4rem;
+  }
+
+  .facets-vertical-form {
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .product-count-vertical .product-count__text {
+    color: rgba(var(--color-foreground), 0.65);
+    font-size: 1.3rem;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .facets-container-drawer {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .mobile-facets__open {
+    font-size: 1.3rem;
+  }
+}
