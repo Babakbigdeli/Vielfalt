@@ -1,0 +1,155 @@
+{{ 'section-utility-bar.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #UtilityBar-{{ section.id }} {
+    --utility-bar-padding-block: {{ section.settings.padding_block }}px;
+  }
+{%- endstyle -%}
+
+{%- if section.blocks.size > 0 -%}
+  <div
+    id="UtilityBar-{{ section.id }}"
+    class="utility-bar color-{{ section.settings.color_scheme }} gradient"
+  >
+    <div class="utility-bar__wrapper page-width">
+      {%- for group in 'left,right' | split: ',' -%}
+        {%- liquid
+          # `where` is not used here: it does not reliably take a nested path like
+          # 'settings.align', so the side is tested inline instead. A blank value
+          # counts as left, which is also the schema default.
+          assign count = 0
+          for block in section.blocks
+            assign side = block.settings.align | default: 'left'
+            if side == group
+              assign count = count | plus: 1
+            endif
+          endfor
+        -%}
+        {%- if count > 0 -%}
+          <ul class="utility-bar__list utility-bar__list--{{ group }} list-unstyled" role="list">
+            {%- for block in section.blocks -%}
+              {%- assign side = block.settings.align | default: 'left' -%}
+              {%- if side != group -%}{%- continue -%}{%- endif -%}
+              <li
+                class="utility-bar__item{% if block.settings.hide_on_mobile %} utility-bar__item--desktop{% endif %}"
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.link != blank -%}<a class="utility-bar__link" href="{{ block.settings.link }}">{%- endif -%}
+                  {%- if block.settings.icon != 'none' -%}
+                    <span class="utility-bar__icon svg-wrapper" aria-hidden="true">
+                      {%- assign icon_file = block.settings.icon | replace: '_', '-' | prepend: 'icon-' | append: '.svg' -%}
+                      {{ icon_file | inline_asset_content }}
+                    </span>
+                  {%- endif -%}
+                  <span class="utility-bar__text">{{ block.settings.text | escape }}</span>
+                {%- if block.settings.link != blank -%}</a>{%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Utility Bar",
+  "tag": "section",
+  "class": "utility-bar-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The thin bar above the header. Anything written here is a public promise — only state what is actually true of your shipping, returns and support."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-3"
+    },
+    {
+      "type": "range",
+      "id": "padding_block",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 10
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "select",
+          "id": "align",
+          "label": "Side",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "check_mark", "label": "Check" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "plane", "label": "Plane" },
+            { "value": "return", "label": "Return" },
+            { "value": "stopwatch", "label": "Stopwatch" },
+            { "value": "lock", "label": "Lock" },
+            { "value": "padlock", "label": "Padlock" },
+            { "value": "price_tag", "label": "Price tag" },
+            { "value": "chat_bubble", "label": "Chat bubble" },
+            { "value": "question_mark", "label": "Question mark" },
+            { "value": "map_pin", "label": "Map pin" }
+          ],
+          "default": "check_mark"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Optional. Leave empty for a plain statement."
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_on_mobile",
+          "label": "Hide on mobile",
+          "info": "The bar is narrow on phones. Hide all but one or two items.",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Utility Bar",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": { "text": "Versand aus der EU", "icon": "check_mark", "align": "left" }
+        },
+        {
+          "type": "item",
+          "settings": { "text": "Hilfe & Kontakt", "icon": "question_mark", "align": "right" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
