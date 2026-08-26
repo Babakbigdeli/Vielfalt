@@ -1,137 +1,15 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
-      "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
-          }
-        },
-        "button": {
-          "type": "buttons",
-          "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading",
-        "button"
-      ],
-      "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "image_behavior": "none",
-        "desktop_content_position": "bottom-center",
-        "desktop_content_alignment": "center",
-        "show_text_box": false,
-        "color_scheme": "scheme-3",
-        "stack_images_on_mobile": false,
-        "mobile_content_alignment": "center",
-        "show_text_below": false
-      }
-    },
-    "category_grid_ApJJk6": {
-      "type": "category-grid",
-      "blocks": {
-        "category_item_aKdTUw": {
-          "type": "category_item",
-          "settings": {
-            "title": "Batterien & Akku",
-            "product_count": "245 Produkte",
-            "link": ""
-          }
-        },
-        "category_item_U7HeBy": {
-          "type": "category_item",
-          "settings": {
-            "title": "Werkzeuge",
-            "product_count": "189 Produkte",
-            "link": ""
-          }
-        },
-        "category_item_kEbhf8": {
-          "type": "category_item",
-          "settings": {
-            "title": "Elektrokomponenten",
-            "product_count": "312 Produkte",
-            "link": ""
-          }
-        },
-        "category_item_V3bpxp": {
-          "type": "category_item",
-          "settings": {
-            "title": "Haushaltsgeräte",
-            "product_count": "156 Produkte",
-            "link": ""
-          }
-        },
-        "category_item_zdjCFr": {
-          "type": "category_item",
-          "settings": {
-            "title": "Heizung & Sanitär",
-            "product_count": "98 Produkte",
-            "link": ""
-          }
-        },
-        "category_item_BfyjFG": {
-          "type": "category_item",
-          "settings": {
-            "title": "Beleuchtung",
-            "product_count": "134 Produkte",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "category_item_aKdTUw",
-        "category_item_U7HeBy",
-        "category_item_kEbhf8",
-        "category_item_V3bpxp",
-        "category_item_zdjCFr",
-        "category_item_BfyjFG"
-      ],
-      "name": "Category Grid",
-      "settings": {
-        "title": "Kategorien",
-        "show_view_all": true,
-        "view_all_label": "Alle Produkte durchsuchen",
-        "view_all_link": "",
-        "columns_desktop": "4",
-        "columns_mobile": "2",
-        "image_ratio": "square",
-        "color_scheme": "",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "hero_utility_jWe3C3": {
       "type": "hero-utility",
       "name": "Hero Utility",
       "settings": {
-        "heading": "Technik & Haushalt – alles aus einer Hand",
+        "heading": "Vielfalt für Haushalt, Technik und Werkstatt",
         "heading_size": "h1",
         "heading_level": "h1",
-        "subheading": "Über 1.000 Produkte: Batterien, Werkzeuge, Elektrokomponenten und mehr.",
+        "subheading": "Haushaltsgeräte, Computer-Hardware, Werkzeuge und Audio-Technik – Markenware von Bosch, Kärcher, DeWalt, ASUS und vielen mehr.",
         "button_label": "Jetzt entdecken",
-        "button_link": "",
+        "button_link": "shopify://collections/all",
         "overlay_opacity": 50,
         "color_scheme": "",
         "content_alignment": "center",
@@ -139,10 +17,10 @@
         "padding_bottom": 40
       }
     },
-    "trust_bar_R8ieUD": {
+    "trust_bar_TMLpbe": {
       "type": "trust-bar",
       "blocks": {
-        "trust_item_NdHVHz": {
+        "trust_item_RqweTk": {
           "type": "trust_item",
           "settings": {
             "icon": "truck",
@@ -150,7 +28,7 @@
             "description": "Lieferung in 1–3 Werktagen"
           }
         },
-        "trust_item_redxmL": {
+        "trust_item_k9VzLJ": {
           "type": "trust_item",
           "settings": {
             "icon": "lock",
@@ -158,7 +36,7 @@
             "description": "SSL-verschlüsselt & DSGVO-konform"
           }
         },
-        "trust_item_KYhHiD": {
+        "trust_item_jXHRMG": {
           "type": "trust_item",
           "settings": {
             "icon": "return",
@@ -166,7 +44,7 @@
             "description": "Kostenlose Rücksendung"
           }
         },
-        "trust_item_xK6EiR": {
+        "trust_item_wUXW4T": {
           "type": "trust_item",
           "settings": {
             "icon": "price_tag",
@@ -176,47 +54,95 @@
         }
       },
       "block_order": [
-        "trust_item_NdHVHz",
-        "trust_item_redxmL",
-        "trust_item_KYhHiD",
-        "trust_item_xK6EiR"
+        "trust_item_RqweTk",
+        "trust_item_k9VzLJ",
+        "trust_item_jXHRMG",
+        "trust_item_wUXW4T"
       ],
       "name": "Trust Bar",
       "settings": {
         "show_dividers": true,
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "padding_top": 20,
         "padding_bottom": 20
       }
     },
-    "featured_products_grid_tkpgWe": {
-      "type": "featured-products-grid",
-      "name": "Featured Products Grid",
+    "category_grid_ApJJk6": {
+      "type": "category-grid",
+      "blocks": {
+        "category_item_01": {
+          "type": "category_item",
+          "settings": {
+            "collection": "haushalt-und-kueche"
+          }
+        },
+        "category_item_02": {
+          "type": "category_item",
+          "settings": {
+            "collection": "computer-und-komponenten"
+          }
+        },
+        "category_item_03": {
+          "type": "category_item",
+          "settings": {
+            "collection": "reinigung-klima-und-sanitaer"
+          }
+        },
+        "category_item_04": {
+          "type": "category_item",
+          "settings": {
+            "collection": "werkzeuge-und-werkstatt"
+          }
+        },
+        "category_item_05": {
+          "type": "category_item",
+          "settings": {
+            "collection": "audio-kommunikation-und-medien"
+          }
+        },
+        "category_item_06": {
+          "type": "category_item",
+          "settings": {
+            "collection": "auto-mobilitaet-und-outdoor"
+          }
+        },
+        "category_item_07": {
+          "type": "category_item",
+          "settings": {
+            "collection": "wohnen-und-organisation"
+          }
+        }
+      },
+      "block_order": [
+        "category_item_01",
+        "category_item_02",
+        "category_item_03",
+        "category_item_04",
+        "category_item_05",
+        "category_item_06",
+        "category_item_07"
+      ],
+      "name": "Category Grid",
       "settings": {
-        "collection": "",
-        "products_to_show": 8,
-        "title": "Bestseller",
-        "heading_size": "h2",
+        "title": "Kategorien",
         "show_view_all": true,
-        "view_all_label": "Alle anzeigen",
-        "image_ratio": "adapt",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
+        "view_all_label": "Alle Produkte durchsuchen",
+        "view_all_link": "shopify://collections/all",
         "columns_desktop": "4",
         "columns_mobile": "2",
+        "image_ratio": "square",
         "color_scheme": "",
         "padding_top": 36,
-        "padding_bottom": 36
+        "padding_bottom": 36,
+        "show_product_count": true,
+        "count_label_one": "Produkt",
+        "count_label_other": "Produkte"
       }
     }
   },
   "order": [
-    "image_banner",
     "hero_utility_jWe3C3",
-    "category_grid_ApJJk6",
-    "trust_bar_R8ieUD",
-    "featured_products_grid_tkpgWe"
+    "trust_bar_TMLpbe",
+    "category_grid_ApJJk6"
   ]
 }

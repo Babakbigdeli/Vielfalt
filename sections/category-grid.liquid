@@ -56,6 +56,44 @@
       {% endif %}
     >
       {%- for block in section.blocks -%}
+        {%- liquid
+          # Everything a card shows is read from the linked collection, so the
+          # title, image, link and count can never drift from the real catalogue.
+          # The override fields below are only consulted when they are filled in.
+          assign coll = block.settings.collection
+
+          assign card_url = block.settings.link
+          if card_url == blank and coll != blank
+            assign card_url = coll.url
+          endif
+
+          assign card_title = block.settings.title
+          if card_title == blank and coll != blank
+            assign card_title = coll.title
+          endif
+
+          assign card_image = block.settings.image
+          if card_image == blank and coll != blank
+            assign card_image = coll.image
+          endif
+          if card_image == blank and coll != blank
+            assign card_image = coll.products.first.featured_image
+          endif
+
+          assign card_count = ''
+          if section.settings.show_product_count
+            if coll != blank
+              assign card_n = coll.all_products_count
+              if card_n == 1
+                assign card_count = card_n | append: ' ' | append: section.settings.count_label_one
+              else
+                assign card_count = card_n | append: ' ' | append: section.settings.count_label_other
+              endif
+            else
+              assign card_count = block.settings.product_count
+            endif
+          endif
+        -%}
         <li
           class="category-grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
           {{ block.shopify_attributes }}
@@ -64,17 +102,17 @@
           {% endif %}
         >
           <a
-            {% if block.settings.link != blank %}
-              href="{{ block.settings.link }}"
+            {% if card_url != blank %}
+              href="{{ card_url }}"
             {% else %}
               role="link" aria-disabled="true"
             {% endif %}
             class="category-card"
           >
             <div class="category-card__image-wrapper category-card__image-wrapper--{{ section.settings.image_ratio }}">
-              {%- if block.settings.image != blank -%}
+              {%- if card_image != blank -%}
                 {{
-                  block.settings.image
+                  card_image
                   | image_url: width: 800
                   | image_tag:
                     widths: '200, 300, 400, 600, 800',
@@ -90,11 +128,11 @@
             </div>
 
             <div class="category-card__info">
-              {%- if block.settings.title != blank -%}
-                <span class="category-card__title">{{ block.settings.title | escape }}</span>
+              {%- if card_title != blank -%}
+                <span class="category-card__title">{{ card_title | escape }}</span>
               {%- endif -%}
-              {%- if block.settings.product_count != blank -%}
-                <span class="category-card__count">{{ block.settings.product_count | escape }}</span>
+              {%- if card_count != blank -%}
+                <span class="category-card__count">{{ card_count | escape }}</span>
               {%- endif -%}
             </div>
           </a>
@@ -136,6 +174,29 @@
       "type": "url",
       "id": "view_all_link",
       "label": "'View all' link"
+    },
+    {
+      "type": "header",
+      "content": "Product count"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Show product count",
+      "info": "Read live from the linked collection, so it cannot go out of date.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "count_label_one",
+      "label": "Count label (singular)",
+      "default": "Produkt"
+    },
+    {
+      "type": "text",
+      "id": "count_label_other",
+      "label": "Count label (plural)",
+      "default": "Produkte"
     },
     {
       "type": "header",
@@ -238,26 +299,38 @@
       "name": "Category",
       "settings": [
         {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Title, image, link and product count are all read from this collection."
+        },
+        {
+          "type": "header",
+          "content": "Overrides (optional)"
+        },
+        {
           "type": "image_picker",
           "id": "image",
-          "label": "Image"
+          "label": "Image",
+          "info": "Defaults to the collection image."
         },
         {
           "type": "text",
           "id": "title",
           "label": "Title",
-          "default": "Kategorie"
-        },
-        {
-          "type": "text",
-          "id": "product_count",
-          "label": "Product count",
-          "info": "Optional. Example: 245 Produkte"
+          "info": "Defaults to the collection title."
         },
         {
           "type": "url",
           "id": "link",
-          "label": "Link"
+          "label": "Link",
+          "info": "Defaults to the collection URL."
+        },
+        {
+          "type": "text",
+          "id": "product_count",
+          "label": "Product count text",
+          "info": "Used only when no collection is selected. Prefer selecting a collection so the number stays true."
         }
       ]
     }
@@ -275,46 +348,25 @@
       },
       "blocks": [
         {
-          "type": "category_item",
-          "settings": {
-            "title": "Batterien & Akku",
-            "product_count": "245 Produkte"
-          }
+          "type": "category_item"
         },
         {
-          "type": "category_item",
-          "settings": {
-            "title": "Werkzeuge",
-            "product_count": "189 Produkte"
-          }
+          "type": "category_item"
         },
         {
-          "type": "category_item",
-          "settings": {
-            "title": "Elektrokomponenten",
-            "product_count": "312 Produkte"
-          }
+          "type": "category_item"
         },
         {
-          "type": "category_item",
-          "settings": {
-            "title": "Haushaltsgeräte",
-            "product_count": "156 Produkte"
-          }
+          "type": "category_item"
         },
         {
-          "type": "category_item",
-          "settings": {
-            "title": "Heizung & Sanitär",
-            "product_count": "98 Produkte"
-          }
+          "type": "category_item"
         },
         {
-          "type": "category_item",
-          "settings": {
-            "title": "Beleuchtung",
-            "product_count": "134 Produkte"
-          }
+          "type": "category_item"
+        },
+        {
+          "type": "category_item"
         }
       ]
     }
