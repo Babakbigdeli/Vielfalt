@@ -12,7 +12,12 @@
     class="utility-bar color-{{ section.settings.color_scheme }} gradient"
   >
     <div class="utility-bar__wrapper page-width">
-      {%- for group in 'left,right' | split: ',' -%}
+      {%- comment -%}
+        Liquid's `for` tag takes a plain iterable — a filter cannot be piped inside the
+        `in` expression, so the array has to be assigned first.
+      {%- endcomment -%}
+      {%- assign sides = 'left,right' | split: ',' -%}
+      {%- for group in sides -%}
         {%- liquid
           # `where` is not used here: it does not reliably take a nested path like
           # 'settings.align', so the side is tested inline instead. A blank value
