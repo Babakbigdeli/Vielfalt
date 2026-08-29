@@ -11,8 +11,20 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
-    "announcement_bar_J3DMyX": {
+    "announcement_bar_TmcGhY": {
       "type": "announcement-bar",
+      "blocks": {
+        "announcement_kEFFqM": {
+          "type": "announcement",
+          "settings": {
+            "text": "Willkommen in unserem Shop",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_kEFFqM"
+      ],
       "name": "t:sections.announcement-bar.presets.name",
       "settings": {
         "auto_rotate": false,
@@ -45,7 +57,7 @@
     }
   },
   "order": [
-    "announcement_bar_J3DMyX",
+    "announcement_bar_TmcGhY",
     "header"
   ]
 }
