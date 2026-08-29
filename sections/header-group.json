@@ -25,6 +25,7 @@
       "block_order": [
         "announcement_kEFFqM"
       ],
+      "disabled": true,
       "name": "t:sections.announcement-bar.presets.name",
       "settings": {
         "auto_rotate": false,
@@ -34,6 +35,40 @@
         "show_social": false,
         "enable_country_selector": false,
         "enable_language_selector": false
+      }
+    },
+    "utility_bar_TChPcn": {
+      "type": "utility-bar",
+      "blocks": {
+        "item_e9Tgry": {
+          "type": "item",
+          "settings": {
+            "text": "Versand aus der EU",
+            "align": "left",
+            "icon": "check_mark",
+            "link": "",
+            "hide_on_mobile": false
+          }
+        },
+        "item_dCPPra": {
+          "type": "item",
+          "settings": {
+            "text": "Hilfe & Kontakt",
+            "align": "right",
+            "icon": "question_mark",
+            "link": "",
+            "hide_on_mobile": false
+          }
+        }
+      },
+      "block_order": [
+        "item_e9Tgry",
+        "item_dCPPra"
+      ],
+      "name": "Utility Bar",
+      "settings": {
+        "color_scheme": "",
+        "padding_block": 10
       }
     },
     "header": {
@@ -58,6 +93,7 @@
   },
   "order": [
     "announcement_bar_TmcGhY",
+    "utility_bar_TChPcn",
     "header"
   ]
 }
