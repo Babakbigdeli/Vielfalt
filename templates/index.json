@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero_utility_jWe3C3": {
@@ -73,43 +82,64 @@
         "category_item_01": {
           "type": "category_item",
           "settings": {
-            "collection": "haushalt-und-kueche"
+            "collection": "haushalt-und-kueche",
+            "title": "",
+            "link": "",
+            "product_count": ""
           }
         },
         "category_item_02": {
           "type": "category_item",
           "settings": {
-            "collection": "computer-und-komponenten"
+            "collection": "computer-und-komponenten",
+            "title": "",
+            "link": "",
+            "product_count": ""
           }
         },
         "category_item_03": {
           "type": "category_item",
           "settings": {
-            "collection": "reinigung-klima-und-sanitaer"
+            "collection": "reinigung-klima-und-sanitaer",
+            "title": "",
+            "link": "",
+            "product_count": ""
           }
         },
         "category_item_04": {
           "type": "category_item",
           "settings": {
-            "collection": "werkzeuge-und-werkstatt"
+            "collection": "werkzeuge-und-werkstatt",
+            "title": "",
+            "link": "",
+            "product_count": ""
           }
         },
         "category_item_05": {
           "type": "category_item",
           "settings": {
-            "collection": "audio-kommunikation-und-medien"
+            "collection": "audio-kommunikation-und-medien",
+            "title": "",
+            "link": "",
+            "product_count": ""
           }
         },
         "category_item_06": {
           "type": "category_item",
           "settings": {
-            "collection": "auto-mobilitaet-und-outdoor"
+            "collection": "auto-mobilitaet-und-outdoor",
+            "title": "",
+            "link": "",
+            "product_count": ""
           }
         },
         "category_item_07": {
           "type": "category_item",
           "settings": {
-            "collection": "wohnen-und-organisation"
+            "collection": "wohnen-und-organisation",
+            "title": "",
+            "link": "",
+            "product_count": ""
           }
         }
       },
@@ -128,15 +158,15 @@
         "show_view_all": true,
         "view_all_label": "Alle Produkte durchsuchen",
         "view_all_link": "shopify://collections/all",
+        "show_product_count": true,
+        "count_label_one": "Produkt",
+        "count_label_other": "Produkte",
         "columns_desktop": "4",
         "columns_mobile": "2",
         "image_ratio": "square",
         "color_scheme": "scheme-1",
         "padding_top": 36,
-        "padding_bottom": 36,
-        "show_product_count": true,
-        "count_label_one": "Produkt",
-        "count_label_other": "Produkte"
+        "padding_bottom": 36
       }
     }
   },
