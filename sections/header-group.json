@@ -30,7 +30,7 @@
             "text": "Hilfe & Kontakt",
             "align": "right",
             "icon": "question_mark",
-            "link": "",
+            "link": "shopify://pages/contact",
             "hide_on_mobile": false
           }
         }
