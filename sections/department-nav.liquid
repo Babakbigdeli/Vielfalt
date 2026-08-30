@@ -1,0 +1,96 @@
+{{ 'section-department-nav.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+-%}
+
+{%- if menu.links.size > 0 -%}
+  <nav
+    class="dept-nav color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_dropdowns %} dept-nav--dropdowns{% endif %}"
+    aria-label="{{ section.settings.aria_label | default: 'Hauptkategorien' | escape }}"
+  >
+    <ul class="dept-nav__list page-width list-unstyled" role="list">
+      {%- for link in menu.links -%}
+        {%- assign has_children = false -%}
+        {%- if link.links.size > 0 and section.settings.show_dropdowns -%}
+          {%- assign has_children = true -%}
+        {%- endif -%}
+        <li class="dept-nav__item{% if has_children %} dept-nav__item--parent{% endif %}">
+          <a
+            href="{{ link.url }}"
+            class="dept-nav__link{% if link.active or link.child_active %} is-active{% endif %}"
+            {% if link.active %}aria-current="page"{% endif %}
+          >
+            <span>{{ link.title | escape }}</span>
+            {%- if has_children -%}
+              <span class="dept-nav__caret svg-wrapper" aria-hidden="true">
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+              </span>
+            {%- endif -%}
+          </a>
+
+          {%- if has_children -%}
+            <ul class="dept-nav__submenu list-unstyled" role="list">
+              {%- for child in link.links -%}
+                <li>
+                  <a
+                    href="{{ child.url }}"
+                    class="dept-nav__sublink{% if child.active %} is-active{% endif %}"
+                    {% if child.active %}aria-current="page"{% endif %}
+                  >
+                    {{- child.title | escape -}}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Department Nav",
+  "tag": "section",
+  "class": "dept-nav-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "A full-width row of department links, so long labels are not squeezed into the header's middle column. Second-level menu items appear as dropdowns."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dropdowns",
+      "label": "Show second level as dropdowns",
+      "info": "Turn off to keep every department a single link. Sub-collections stay reachable from the department page.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible label",
+      "info": "Read by screen readers to distinguish this from other navigation.",
+      "default": "Hauptkategorien"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Department Nav"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,121 @@
+.dept-nav {
+  border-bottom: 1px solid rgba(var(--color-foreground), 0.12);
+}
+
+.dept-nav__list {
+  display: flex;
+  gap: 0.2rem;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.dept-nav__item {
+  position: relative;
+  flex: none;
+}
+
+.dept-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.4rem 1.4rem;
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-decoration: none;
+  color: rgb(var(--color-foreground));
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.dept-nav__link:hover,
+.dept-nav__link:focus-visible,
+.dept-nav__link.is-active {
+  color: rgb(var(--color-link));
+  border-bottom-color: rgb(var(--color-link));
+}
+
+.dept-nav__caret {
+  display: inline-flex;
+  flex: none;
+}
+
+.dept-nav__caret svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+
+.dept-nav__submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 30;
+  min-width: 22rem;
+  margin: 0;
+  padding: 0.8rem 0;
+  background: rgb(var(--color-background));
+  border: 1px solid rgba(var(--color-foreground), 0.12);
+  border-top: 3px solid rgb(var(--color-link));
+  box-shadow: 0 12px 28px rgba(var(--color-shadow), 0.14);
+}
+
+.dept-nav--dropdowns .dept-nav__item--parent:hover > .dept-nav__submenu,
+.dept-nav--dropdowns .dept-nav__item--parent:focus-within > .dept-nav__submenu {
+  display: block;
+}
+
+.dept-nav__sublink {
+  display: block;
+  padding: 0.9rem 1.8rem;
+  font-size: 1.4rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-decoration: none;
+  color: rgb(var(--color-foreground));
+}
+
+.dept-nav__sublink:hover,
+.dept-nav__sublink:focus-visible,
+.dept-nav__sublink.is-active {
+  color: rgb(var(--color-link));
+  background: rgba(var(--color-link), 0.07);
+}
+
+
+@media screen and (max-width: 989px) {
+  .dept-nav__list {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dept-nav__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dept-nav__link {
+    padding: 1.2rem 1.2rem;
+    font-size: 1.4rem;
+  }
+
+  .dept-nav__caret,
+  .dept-nav__submenu {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .dept-nav__list {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .dept-nav__link {
+    padding: 1.1rem 1rem;
+    font-size: 1.35rem;
+  }
+}
