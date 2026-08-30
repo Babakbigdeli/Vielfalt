@@ -14,6 +14,16 @@
     "utility_bar": {
       "type": "utility-bar",
       "blocks": {
+        "item_Gdq6da": {
+          "type": "item",
+          "settings": {
+            "text": "",
+            "align": "left",
+            "icon": "check_mark",
+            "link": "",
+            "hide_on_mobile": false
+          }
+        },
         "util_eu": {
           "type": "item",
           "settings": {
@@ -36,6 +46,7 @@
         }
       },
       "block_order": [
+        "item_Gdq6da",
         "util_eu",
         "util_help"
       ],
