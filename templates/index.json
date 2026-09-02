@@ -73,43 +73,49 @@
         "category_item_01": {
           "type": "category_item",
           "settings": {
-            "collection": "haushalt-und-kueche"
+            "collection": "kuechengeraete"
           }
         },
         "category_item_02": {
           "type": "category_item",
           "settings": {
-            "collection": "computer-und-komponenten"
+            "collection": "pc-komponenten"
           }
         },
         "category_item_03": {
           "type": "category_item",
           "settings": {
-            "collection": "reinigung-klima-und-sanitaer"
+            "collection": "speicher-und-laufwerke"
           }
         },
         "category_item_04": {
           "type": "category_item",
           "settings": {
-            "collection": "werkzeuge-und-werkstatt"
+            "collection": "reinigung"
           }
         },
         "category_item_05": {
           "type": "category_item",
           "settings": {
-            "collection": "audio-kommunikation-und-medien"
+            "collection": "waeschepflege-und-naehen"
           }
         },
         "category_item_06": {
           "type": "category_item",
           "settings": {
-            "collection": "auto-mobilitaet-und-outdoor"
+            "collection": "peripherie"
           }
         },
         "category_item_07": {
           "type": "category_item",
           "settings": {
-            "collection": "wohnen-und-organisation"
+            "collection": "kopfhoerer-und-headsets"
+          }
+        },
+        "category_item_08": {
+          "type": "category_item",
+          "settings": {
+            "collection": "werkstattausstattung"
           }
         }
       },
@@ -120,7 +126,8 @@
         "category_item_04",
         "category_item_05",
         "category_item_06",
-        "category_item_07"
+        "category_item_07",
+        "category_item_08"
       ],
       "name": "Category Grid",
       "settings": {
