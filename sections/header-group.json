@@ -1,1 +1,93 @@
-{"name":"t:sections.header.name","type":"header","sections":{"utility_bar":{"type":"utility-bar","blocks":{"util_eu":{"type":"item","settings":{"text":"Versand aus der EU","align":"left","icon":"check_mark","hide_on_mobile":false}},"util_help":{"type":"item","settings":{"text":"Hilfe & Kontakt","align":"right","icon":"question_mark","hide_on_mobile":false}}},"block_order":["util_eu","util_help"],"settings":{"color_scheme":"scheme-3","padding_block":10}},"header":{"type":"header","settings":{"logo_position":"middle-left","mobile_logo_position":"center","menu":"main-menu","menu_type_desktop":"dropdown","sticky_header_type":"on-scroll-up","show_line_separator":true,"color_scheme":"scheme-1","menu_color_scheme":"scheme-1","enable_country_selector":true,"enable_language_selector":true,"enable_customer_avatar":true,"margin_bottom":0,"padding_top":20,"padding_bottom":20,"show_inline_menu":false}},"dept_nav":{"type":"department-nav","settings":{"menu":"main-menu","show_dropdowns":true,"aria_label":"Hauptkategorien","color_scheme":"scheme-1"}}},"order":["utility_bar","header","dept_nav"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "utility_bar": {
+      "type": "utility-bar",
+      "blocks": {
+        "item_Rt9th6": {
+          "type": "item",
+          "settings": {
+            "text": "Über uns",
+            "align": "right",
+            "icon": "none",
+            "link": "#",
+            "hide_on_mobile": false
+          }
+        },
+        "util_eu": {
+          "type": "item",
+          "settings": {
+            "text": "Versand aus der EU",
+            "align": "left",
+            "icon": "check_mark",
+            "link": "",
+            "hide_on_mobile": false
+          }
+        },
+        "util_help": {
+          "type": "item",
+          "settings": {
+            "text": "Hilfe & Kontakt",
+            "align": "right",
+            "icon": "question_mark",
+            "link": "shopify://pages/contact",
+            "hide_on_mobile": false
+          }
+        }
+      },
+      "block_order": [
+        "item_Rt9th6",
+        "util_eu",
+        "util_help"
+      ],
+      "settings": {
+        "color_scheme": "scheme-3",
+        "padding_block": 10
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_position": "middle-left",
+        "mobile_logo_position": "center",
+        "menu": "main-menu",
+        "menu_type_desktop": "dropdown",
+        "show_inline_menu": false,
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "enable_customer_avatar": true,
+        "margin_bottom": 0,
+        "padding_top": 20,
+        "padding_bottom": 20
+      }
+    },
+    "dept_nav": {
+      "type": "department-nav",
+      "settings": {
+        "menu": "main-menu",
+        "show_dropdowns": true,
+        "aria_label": "Hauptkategorien",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "utility_bar",
+    "header",
+    "dept_nav"
+  ]
+}
