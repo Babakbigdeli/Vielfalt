@@ -76,10 +76,23 @@
 
 /* base */
 
+/* Vielfalt: the page gutter is one token instead of eight hardcoded values.
+   2rem on desktop, matching the mockup's `.wrap` (Designs/vielfalt-homepage.html);
+   Dawn's 1.5rem is kept on mobile, where 2rem would mean *more* margin, not less. */
+:root {
+  --page-gutter: 1.5rem;
+}
+
+@media screen and (min-width: 750px) {
+  :root {
+    --page-gutter: 2rem;
+  }
+}
+
 .page-width {
   max-width: var(--page-width);
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 var(--page-gutter);
 }
 
 body:has(.section-header .drawer-menu) .announcement-bar-section .page-width {
@@ -96,19 +109,19 @@ body:has(.section-header .drawer-menu) .announcement-bar-section .page-width {
 }
 
 .utility-bar__grid.page-width {
-  padding-left: 3rem;
-  padding-right: 3rem;
+  padding-left: var(--page-gutter);
+  padding-right: var(--page-gutter);
 }
 
 @media screen and (min-width: 750px) {
   .page-width {
-    padding: 0 5rem;
+    padding: 0 var(--page-gutter);
   }
 
   .header.page-width,
   .utility-bar__grid.page-width {
-    padding-left: 3.2rem;
-    padding-right: 3.2rem;
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
   }
 
   .page-width--narrow {
@@ -120,14 +133,14 @@ body:has(.section-header .drawer-menu) .announcement-bar-section .page-width {
   }
 
   .page-width-tablet {
-    padding: 0 5rem;
+    padding: 0 var(--page-gutter);
   }
 }
 
 @media screen and (min-width: 990px) {
   .header:not(.drawer-menu).page-width {
-    padding-left: 5rem;
-    padding-right: 5rem;
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
   }
 
   .page-width--narrow {
@@ -137,7 +150,7 @@ body:has(.section-header .drawer-menu) .announcement-bar-section .page-width {
 
   .page-width-desktop {
     max-width: var(--page-width);
-    padding: 0 5rem;
+    padding: 0 var(--page-gutter);
   }
 }
 
@@ -2210,8 +2223,8 @@ input[type='checkbox'] {
 
 @media screen and (min-width: 990px) {
   body:has(.section-header .header:not(.drawer-menu)) .utility-bar .page-width {
-    padding-left: 5rem;
-    padding-right: 5rem;
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
   }
 
   .announcement-bar-slider {
