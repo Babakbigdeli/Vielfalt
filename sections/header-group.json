@@ -50,7 +50,7 @@
         "logo_position": "middle-left",
         "mobile_logo_position": "center",
         "menu": "main-menu",
-        "menu_type_desktop": "mega",
+        "menu_type_desktop": "drawer",
         "show_inline_menu": false,
         "sticky_header_type": "on-scroll-up",
         "show_line_separator": true,
