@@ -3,11 +3,16 @@
 }
 
 .dept-nav__list {
+  --dept-nav-gutter: 5rem;
+  --dept-nav-link-pad: 1.4rem;
+
   display: flex;
   gap: 0.2rem;
-  margin: 0;
-  padding-top: 0;
-  padding-bottom: 0;
+  max-width: var(--page-width);
+  margin-block: 0;
+  margin-inline: auto;
+  padding-block: 0;
+  padding-inline: calc(var(--dept-nav-gutter) - var(--dept-nav-link-pad));
 }
 
 .dept-nav__item {
@@ -97,9 +102,20 @@
     display: none;
   }
 
+  .dept-nav__list {
+    --dept-nav-link-pad: 1.2rem;
+  }
+
   .dept-nav__link {
     padding: 1.2rem 1.2rem;
     font-size: 1.4rem;
+  }
+
+  /* a scroll container drops its trailing padding once it is scrolled to the end */
+  .dept-nav__list::after {
+    content: '';
+    flex: none;
+    width: calc(var(--dept-nav-gutter) - var(--dept-nav-link-pad));
   }
 
   .dept-nav__caret,
@@ -110,8 +126,8 @@
 
 @media screen and (max-width: 749px) {
   .dept-nav__list {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    --dept-nav-gutter: 1.5rem;
+    --dept-nav-link-pad: 1rem;
   }
 
   .dept-nav__link {
