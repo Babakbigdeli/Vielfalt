@@ -2,19 +2,85 @@
   "sections": {
     "hero_utility_jWe3C3": {
       "type": "hero-utility",
+      "blocks": {
+        "hero_usp_01": {
+          "type": "usp",
+          "settings": {
+            "text": "Versand aus der EU"
+          }
+        },
+        "hero_usp_02": {
+          "type": "usp",
+          "settings": {
+            "text": "Sichere Zahlung"
+          }
+        },
+        "hero_usp_03": {
+          "type": "usp",
+          "settings": {
+            "text": "14 Tage Widerrufsrecht"
+          }
+        },
+        "hero_tile_01": {
+          "type": "tile",
+          "settings": {
+            "collection": "haus-und-wohnen",
+            "icon": "vf_haushalt"
+          }
+        },
+        "hero_tile_02": {
+          "type": "tile",
+          "settings": {
+            "collection": "elektronik-und-technik",
+            "icon": "vf_elektronik"
+          }
+        },
+        "hero_tile_03": {
+          "type": "tile",
+          "settings": {
+            "collection": "werkzeuge-und-werkstatt",
+            "icon": "vf_werkzeug"
+          }
+        },
+        "hero_tile_04": {
+          "type": "tile",
+          "settings": {
+            "collection": "freizeit-und-mobilitaet",
+            "icon": "vf_mobilitaet"
+          }
+        }
+      },
+      "block_order": [
+        "hero_usp_01",
+        "hero_usp_02",
+        "hero_usp_03",
+        "hero_tile_01",
+        "hero_tile_02",
+        "hero_tile_03",
+        "hero_tile_04"
+      ],
       "name": "Hero Utility",
       "settings": {
-        "heading": "Vielfalt für Haushalt, Technik und Werkstatt",
-        "heading_size": "h1",
+        "kicker": "[count] Artikel im Sortiment",
+        "heading": "Technik, Werkzeug und Haushalt \u2013",
+        "heading_accent": "alles aus einer Hand.",
         "heading_level": "h1",
-        "subheading": "Haushaltsgeräte, Computer-Hardware, Werkzeuge und Audio-Technik – Markenware von Bosch, Kärcher, DeWalt, ASUS und vielen mehr.",
-        "button_label": "Jetzt entdecken",
+        "lead": "Sorgf\u00e4ltig ausgew\u00e4hltes Sortiment statt endloser Katalog: Haushalt, Elektronik, Werkzeug und Beleuchtung. Bekannte Marken, Versand aus der EU.",
+        "button_label": "Sortiment entdecken",
         "button_link": "shopify://collections/all",
-        "overlay_opacity": 50,
+        "button_2_label": "Neu im Sortiment",
+        "button_2_link": "/collections/all?sort_by=created-descending",
+        "show_panel": true,
+        "panel_title": "Direkt zum Sortiment",
+        "panel_link_label": "Alle Kategorien ansehen",
+        "panel_link": "/collections",
+        "panel_color_scheme": "scheme-1",
+        "show_glow": true,
+        "show_mark": true,
+        "mark_opacity": 9,
         "color_scheme": "scheme-3",
-        "content_alignment": "center",
-        "padding_top": 40,
-        "padding_bottom": 40
+        "padding_top": 64,
+        "padding_bottom": 64
       }
     },
     "trust_bar_TMLpbe": {

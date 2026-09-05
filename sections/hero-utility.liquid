@@ -1,11 +1,17 @@
 {{ 'section-hero-utility.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
-  assign fetch_priority = 'auto'
-  assign loading_strategy = 'lazy'
-  if section.index == 1
-    assign fetch_priority = 'high'
-    assign loading_strategy = 'eager'
+  assign product_total = collections.all.all_products_count
+  assign kicker = section.settings.kicker | replace: '[count]', product_total
+
+  assign has_panel = false
+  if section.settings.show_panel
+    for block in section.blocks
+      if block.type == 'tile'
+        assign has_panel = true
+        break
+      endif
+    endfor
   endif
 -%}
 
@@ -23,61 +29,170 @@
   }
 
   #HeroUtility-{{ section.id }} {
-    --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --hero-mark-opacity: {{ section.settings.mark_opacity | divided_by: 100.0 }};
   }
 {%- endstyle -%}
 
 <div
   id="HeroUtility-{{ section.id }}"
-  class="hero-utility color-{{ section.settings.color_scheme }} gradient hero-utility--align-{{ section.settings.content_alignment }}{% if section.settings.background_image != blank %} hero-utility--has-image{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  class="hero-utility color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_glow %} hero-utility--glow{% endif %}{% unless has_panel %} hero-utility--no-panel{% endunless %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
 >
-  {%- if section.settings.background_image != blank -%}
-    <div class="hero-utility__media">
-      {{
-        section.settings.background_image
-        | image_url: width: 3840
-        | image_tag:
-          sizes: '100vw',
-          widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
-          fetchpriority: fetch_priority,
-          loading: loading_strategy
-      }}
-      <div class="hero-utility__overlay" aria-hidden="true"></div>
+  {%- if section.settings.show_mark -%}
+    <div class="hero-utility__mark" aria-hidden="true">
+      {%- if section.settings.mark_image != blank -%}
+        {{
+          section.settings.mark_image
+          | image_url: width: 880
+          | image_tag: widths: '440, 880', loading: 'lazy', alt: ''
+        }}
+      {%- else -%}
+        {{ 'icon-vf-mark.svg' | inline_asset_content }}
+      {%- endif -%}
     </div>
   {%- endif -%}
 
   <div class="hero-utility__inner page-width section-{{ section.id }}-padding">
-    {%- if section.settings.heading != blank -%}
-      {%- if section.settings.heading_level == 'h2' -%}
-        <h2 class="hero-utility__heading {{ section.settings.heading_size }}">
-          {{ section.settings.heading }}
-        </h2>
-      {%- else -%}
-        <h1 class="hero-utility__heading {{ section.settings.heading_size }}">
-          {{ section.settings.heading }}
-        </h1>
+    <div class="hero-utility__content">
+      {%- if kicker != blank -%}
+        <span class="hero-utility__kicker">{{ kicker }}</span>
       {%- endif -%}
-    {%- endif -%}
 
-    {%- if section.settings.subheading != blank -%}
-      <p class="hero-utility__subheading">
-        {{ section.settings.subheading | escape }}
-      </p>
-    {%- endif -%}
+      {%- if section.settings.heading != blank or section.settings.heading_accent != blank -%}
+        {%- capture heading_content -%}
+          {{- section.settings.heading -}}
+          {%- if section.settings.heading_accent != blank -%}
+            <span class="hero-utility__accent">{{ section.settings.heading_accent | escape }}</span>
+          {%- endif -%}
+        {%- endcapture -%}
+        {%- if section.settings.heading_level == 'h2' -%}
+          <h2 class="hero-utility__heading">{{ heading_content }}</h2>
+        {%- else -%}
+          <h1 class="hero-utility__heading">{{ heading_content }}</h1>
+        {%- endif -%}
+      {%- endif -%}
 
-    {%- if section.settings.button_label != blank -%}
-      <div class="hero-utility__cta">
-        <a
-          {% if section.settings.button_link == blank %}
-            role="link" aria-disabled="true"
-          {% else %}
-            href="{{ section.settings.button_link }}"
-          {% endif %}
-          class="button button--primary"
-        >
-          {{- section.settings.button_label | escape -}}
-        </a>
-      </div>
+      {%- if section.settings.lead != blank -%}
+        <p class="hero-utility__lead">{{ section.settings.lead | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank or section.settings.button_2_label != blank -%}
+        <div class="hero-utility__cta">
+          {%- if section.settings.button_label != blank -%}
+            <a
+              {% if section.settings.button_link == blank %}
+                role="link" aria-disabled="true"
+              {% else %}
+                href="{{ section.settings.button_link }}"
+              {% endif %}
+              class="hero-utility__btn hero-utility__btn--primary"
+            >
+              {{- section.settings.button_label | escape -}}
+              <span class="hero-utility__chevron svg-wrapper">
+                {{- 'icon-vf-chevron.svg' | inline_asset_content -}}
+              </span>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.button_2_label != blank -%}
+            <a
+              {% if section.settings.button_2_link == blank %}
+                role="link" aria-disabled="true"
+              {% else %}
+                href="{{ section.settings.button_2_link }}"
+              {% endif %}
+              class="hero-utility__btn hero-utility__btn--ghost"
+            >
+              {{- section.settings.button_2_label | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- assign usp_blocks = section.blocks | where: 'type', 'usp' -%}
+      {%- if usp_blocks.size > 0 -%}
+        <ul class="hero-utility__usp list-unstyled" role="list">
+          {%- for block in usp_blocks -%}
+            {%- if block.settings.text != blank -%}
+              <li {{ block.shopify_attributes }}>
+                <span class="hero-utility__check svg-wrapper" aria-hidden="true">
+                  {{- 'icon-vf-check.svg' | inline_asset_content -}}
+                </span>
+                {{ block.settings.text | escape }}
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- if has_panel -%}
+      <aside class="hero-utility__panel color-{{ section.settings.panel_color_scheme }}">
+        {%- if section.settings.panel_title != blank -%}
+          <h2 class="hero-utility__panel-title">{{ section.settings.panel_title | escape }}</h2>
+        {%- endif -%}
+
+        <div class="hero-utility__tiles">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'tile' -%}
+              {%- liquid
+                assign coll = block.settings.collection
+                assign tile_url = block.settings.link
+                if tile_url == blank and coll != blank
+                  assign tile_url = coll.url
+                endif
+                assign tile_title = block.settings.title
+                if tile_title == blank and coll != blank
+                  assign tile_title = coll.title
+                endif
+              -%}
+              {%- if tile_title != blank -%}
+                <a
+                  {% if tile_url == blank %}
+                    role="link" aria-disabled="true"
+                  {% else %}
+                    href="{{ tile_url }}"
+                  {% endif %}
+                  class="hero-utility__tile"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- if block.settings.image != blank -%}
+                    <span class="hero-utility__tile-icon">
+                      {{
+                        block.settings.image
+                        | image_url: width: 168
+                        | image_tag: widths: '42, 84, 168', loading: 'lazy', alt: ''
+                      }}
+                    </span>
+                  {%- elsif block.settings.icon != 'none' -%}
+                    <span class="hero-utility__tile-icon svg-wrapper" aria-hidden="true">
+                      {%- assign icon_file = block.settings.icon | replace: '_', '-' | prepend: 'icon-' | append: '.svg' -%}
+                      {{ icon_file | inline_asset_content }}
+                    </span>
+                  {%- endif -%}
+                  {{ tile_title | escape }}
+                </a>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+
+        {%- if section.settings.panel_link_label != blank -%}
+          <div class="hero-utility__panel-all">
+            <a
+              {% if section.settings.panel_link == blank %}
+                role="link" aria-disabled="true"
+              {% else %}
+                href="{{ section.settings.panel_link }}"
+              {% endif %}
+              class="hero-utility__morelink"
+            >
+              {{- section.settings.panel_link_label | escape -}}
+              <span class="hero-utility__chevron svg-wrapper">
+                {{- 'icon-vf-chevron.svg' | inline_asset_content -}}
+              </span>
+            </a>
+          </div>
+        {%- endif -%}
+      </aside>
     {%- endif -%}
   </div>
 </div>
@@ -87,93 +202,137 @@
   "name": "Hero Utility",
   "tag": "section",
   "class": "section",
+  "max_blocks": 12,
   "disabled_on": {
     "groups": ["header", "footer"]
   },
   "settings": [
     {
-      "type": "inline_richtext",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Technik & Haushalt – alles aus einer Hand"
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "info": "Small yellow label above the heading. Write [count] to insert the live number of published products.",
+      "default": "[count] Artikel im Sortiment"
     },
     {
-      "type": "select",
-      "id": "heading_size",
-      "label": "Heading size",
-      "options": [
-        {
-          "value": "h2",
-          "label": "Small"
-        },
-        {
-          "value": "h1",
-          "label": "Medium"
-        },
-        {
-          "value": "h0",
-          "label": "Large"
-        },
-        {
-          "value": "hxl",
-          "label": "Extra large"
-        }
-      ],
-      "default": "h1"
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading — first line",
+      "default": "Technik, Werkzeug und Haushalt –"
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Heading — accent line",
+      "info": "Sits on its own line in the accent colour of the colour scheme.",
+      "default": "alles aus einer Hand."
     },
     {
       "type": "select",
       "id": "heading_level",
       "label": "Heading HTML element",
-      "info": "Use H1 only once per page. Choose H2 when another H1 already exists on the page.",
+      "info": "Use H1 only once per page.",
       "options": [
-        {
-          "value": "h1",
-          "label": "H1"
-        },
-        {
-          "value": "h2",
-          "label": "H2"
-        }
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
       ],
       "default": "h1"
     },
     {
       "type": "text",
-      "id": "subheading",
-      "label": "Subheading",
-      "default": "Über 1.000 Produkte: Batterien, Werkzeuge, Elektrokomponenten und mehr."
+      "id": "lead",
+      "label": "Intro text"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
     },
     {
       "type": "text",
       "id": "button_label",
-      "label": "Button label",
-      "default": "Jetzt entdecken"
+      "label": "Primary button label",
+      "default": "Sortiment entdecken"
     },
     {
       "type": "url",
       "id": "button_link",
-      "label": "Button link"
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Secondary button label"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Quick links panel"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_panel",
+      "label": "Show the panel",
+      "info": "The panel appears when it is on and at least one Quick link block is added.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "panel_title",
+      "label": "Panel heading",
+      "default": "Direkt zum Sortiment"
+    },
+    {
+      "type": "text",
+      "id": "panel_link_label",
+      "label": "Panel link label",
+      "default": "Alle Kategorien ansehen"
+    },
+    {
+      "type": "url",
+      "id": "panel_link",
+      "label": "Panel link"
+    },
+    {
+      "type": "color_scheme",
+      "id": "panel_color_scheme",
+      "label": "Panel colour scheme",
+      "default": "scheme-1"
     },
     {
       "type": "header",
       "content": "Background"
     },
     {
+      "type": "checkbox",
+      "id": "show_glow",
+      "label": "Show the cyan gradient wash",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mark",
+      "label": "Show the faded logo mark",
+      "default": true
+    },
+    {
       "type": "image_picker",
-      "id": "background_image",
-      "label": "Background image"
+      "id": "mark_image",
+      "label": "Custom mark image",
+      "info": "Leave empty to use the built-in Vielfalt mark."
     },
     {
       "type": "range",
-      "id": "overlay_opacity",
+      "id": "mark_opacity",
       "min": 0,
-      "max": 80,
-      "step": 10,
+      "max": 30,
+      "step": 1,
       "unit": "%",
-      "label": "Image overlay opacity",
-      "info": "Only applies when a background image is set.",
-      "default": 50
+      "label": "Mark opacity",
+      "default": 9
     },
     {
       "type": "header",
@@ -182,25 +341,8 @@
     {
       "type": "color_scheme",
       "id": "color_scheme",
-      "label": "Color scheme",
-      "info": "Controls background and text color when no background image is used.",
-      "default": "scheme-1"
-    },
-    {
-      "type": "select",
-      "id": "content_alignment",
-      "label": "Content alignment",
-      "options": [
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "center",
-          "label": "Center"
-        }
-      ],
-      "default": "center"
+      "label": "Colour scheme",
+      "default": "scheme-3"
     },
     {
       "type": "range",
@@ -210,7 +352,7 @@
       "step": 4,
       "unit": "px",
       "label": "Padding top",
-      "default": 40
+      "default": 64
     },
     {
       "type": "range",
@@ -220,21 +362,100 @@
       "step": 4,
       "unit": "px",
       "label": "Padding bottom",
-      "default": 40
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "usp",
+      "name": "Selling point",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "info": "Shown next to a cyan tick under the buttons."
+        }
+      ]
+    },
+    {
+      "type": "tile",
+      "name": "Quick link",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "The tile takes its label and link from this collection."
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "vf_werkzeug", "label": "Tools" },
+            { "value": "vf_elektronik", "label": "Electronics" },
+            { "value": "vf_kabel", "label": "Cables & power" },
+            { "value": "vf_haushalt", "label": "Household" },
+            { "value": "vf_licht_klima", "label": "Light & climate" },
+            { "value": "vf_audio", "label": "Audio" },
+            { "value": "vf_auto", "label": "Car battery" },
+            { "value": "vf_mobilitaet", "label": "Scooters & mobility" },
+            { "value": "vf_messtechnik", "label": "Measuring" }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom icon image",
+          "info": "Overrides the icon above."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Label override"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link override"
+        }
+      ]
     }
   ],
   "presets": [
     {
       "name": "Hero Utility",
       "settings": {
-        "heading": "Technik & Haushalt – alles aus einer Hand",
-        "subheading": "Über 1.000 Produkte: Batterien, Werkzeuge, Elektrokomponenten und mehr.",
-        "button_label": "Jetzt entdecken",
-        "overlay_opacity": 50,
-        "content_alignment": "center",
-        "padding_top": 40,
-        "padding_bottom": 40
-      }
+        "kicker": "[count] Artikel im Sortiment",
+        "heading": "Technik, Werkzeug und Haushalt –",
+        "heading_accent": "alles aus einer Hand.",
+        "lead": "Sorgfältig ausgewähltes Sortiment statt endloser Katalog: Haushalt, Elektronik, Werkzeug und Beleuchtung. Bekannte Marken, Versand aus der EU.",
+        "button_label": "Sortiment entdecken",
+        "show_panel": true,
+        "panel_title": "Direkt zum Sortiment",
+        "panel_link_label": "Alle Kategorien ansehen",
+        "show_glow": true,
+        "show_mark": true,
+        "mark_opacity": 9,
+        "color_scheme": "scheme-3",
+        "panel_color_scheme": "scheme-1",
+        "padding_top": 64,
+        "padding_bottom": 64
+      },
+      "blocks": [
+        { "type": "usp", "settings": { "text": "Versand aus der EU" } },
+        { "type": "usp", "settings": { "text": "Sichere Zahlung" } },
+        { "type": "usp", "settings": { "text": "14 Tage Widerrufsrecht" } },
+        { "type": "tile", "settings": { "icon": "vf_haushalt", "title": "Haus & Wohnen" } },
+        { "type": "tile", "settings": { "icon": "vf_elektronik", "title": "Elektronik & Technik" } },
+        { "type": "tile", "settings": { "icon": "vf_werkzeug", "title": "Werkzeuge & Werkstatt" } },
+        { "type": "tile", "settings": { "icon": "vf_mobilitaet", "title": "Freizeit & Mobilität" } }
+      ]
     }
   ]
 }
