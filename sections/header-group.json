@@ -49,7 +49,7 @@
       "settings": {
         "logo_position": "middle-left",
         "mobile_logo_position": "center",
-        "menu": "main-menu",
+        "menu": "",
         "menu_type_desktop": "dropdown",
         "show_inline_menu": false,
         "sticky_header_type": "on-scroll-up",
