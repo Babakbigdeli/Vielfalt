@@ -36,7 +36,6 @@
   outline: none;
 }
 
-/* Safari draws its own clear button on type=search and it collides with the yellow button */
 .vf-search__input::-webkit-search-decoration,
 .vf-search__input::-webkit-search-cancel-button {
   -webkit-appearance: none;
@@ -67,7 +66,6 @@
   height: 19px;
 }
 
-
 .vf-search__button-label {
   position: absolute;
   overflow: hidden;
@@ -85,7 +83,9 @@
     justify-self: stretch;
   }
 
-  .header--vf-search.header--middle-left {
+  .header--vf-search.header--middle-left,
+  .header--vf-search.header--top-left {
+    grid-template-areas: 'heading navigation icons';
     grid-template-columns: auto minmax(0, 1fr) auto;
     column-gap: 3.2rem;
   }
@@ -109,27 +109,29 @@
   }
 }
 
-.header--vf-labels .header__icon .visually-hidden {
-  position: static;
-  overflow: visible;
-  width: auto;
-  height: auto;
-  margin: 0;
-  clip: auto;
-  clip-path: none;
-  white-space: nowrap;
+.header__icon-label {
+  display: none;
   font-size: 11.5px;
   font-weight: 600;
   line-height: 1;
+  white-space: nowrap;
 }
 
 @media screen and (min-width: 990px) {
+  .header--vf-labels .header__icons {
+    gap: 8px;
+    padding-right: 0;
+  }
+
   .header--vf-labels .header__icon:not(.header__icon--summary) {
     flex-direction: column;
     gap: 3px;
     padding: 6px 12px;
     border-radius: 4px;
+    text-decoration: none;
     transition: background 0.15s, color 0.15s;
+
+    min-width: max-content;
   }
 
   .header--vf-labels .header__icon:not(.header__icon--summary):hover {
@@ -142,7 +144,11 @@
     height: 21px;
   }
 
+  .header--vf-labels .header__icon-label {
+    display: block;
+  }
 
+ 
   .header--vf-labels .cart-count-bubble {
     top: 2px;
     right: 6px;
@@ -151,13 +157,7 @@
   }
 }
 
-@media screen and (max-width: 989px) {
-  .header--vf-labels .header__icon .visually-hidden {
-    position: absolute;
-    overflow: hidden;
-    width: 1px;
-    height: 1px;
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-  }
+
+.header__icon--wishlist[aria-disabled='true'] {
+  cursor: default;
 }

@@ -284,6 +284,9 @@
               endif
             -%}
           </span>
+          {%- if section.settings.show_icon_labels and section.settings.label_account != blank -%}
+            <span class="header__icon-label" aria-hidden="true">{{ section.settings.label_account | escape }}</span>
+          {%- endif -%}
         </a>
       {%- endif -%}
 
@@ -294,6 +297,23 @@
         {%- endcase -%}
       {%- endfor -%}
 
+      {%- if section.settings.show_wishlist -%}
+        <a
+          {% if section.settings.wishlist_link == blank %}
+            role="link" aria-disabled="true"
+          {% else %}
+            href="{{ section.settings.wishlist_link }}"
+          {% endif %}
+          class="header__icon header__icon--wishlist link focus-inset"
+        >
+          <span class="svg-wrapper">{{ 'icon-vf-heart.svg' | inline_asset_content }}</span>
+          <span class="visually-hidden">{{ section.settings.label_wishlist | escape }}</span>
+          {%- if section.settings.show_icon_labels and section.settings.label_wishlist != blank -%}
+            <span class="header__icon-label" aria-hidden="true">{{ section.settings.label_wishlist | escape }}</span>
+          {%- endif -%}
+        </a>
+      {%- endif -%}
+
       <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
         {% if cart == empty %}
           <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
@@ -301,6 +321,9 @@
           <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
         {% endif %}
         <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+        {%- if section.settings.show_icon_labels and section.settings.label_cart != blank -%}
+          <span class="header__icon-label" aria-hidden="true">{{ section.settings.label_cart | escape }}</span>
+        {%- endif -%}
         {%- if cart != empty -%}
           <div class="cart-count-bubble">
             {%- if cart.item_count < 100 -%}
@@ -556,11 +579,47 @@
       "default": true
     },
     {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search field placeholder",
+      "default": "Produkt, Marke oder Artikelnummer suchen \u2026"
+    },
+    {
       "type": "checkbox",
       "id": "show_icon_labels",
-      "label": "Label the account and cart icons",
-      "info": "Shows the text Dawn keeps for screen readers under each icon, as in the mockup. Desktop only.",
+      "label": "Label the action icons",
+      "info": "Shows a word under each icon, as in the mockup. Desktop only.",
       "default": true
+    },
+    {
+      "type": "text",
+      "id": "label_account",
+      "label": "Account label",
+      "default": "Konto"
+    },
+    {
+      "type": "text",
+      "id": "label_cart",
+      "label": "Cart label",
+      "default": "Warenkorb"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wishlist",
+      "label": "Show the wishlist icon",
+      "info": "Shopify has no built-in wishlist. Point it at a page or a wishlist app below, otherwise the icon does nothing.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "label_wishlist",
+      "label": "Wishlist label",
+      "default": "Merkliste"
+    },
+    {
+      "type": "url",
+      "id": "wishlist_link",
+      "label": "Wishlist link"
     },
     {
       "type": "checkbox",
