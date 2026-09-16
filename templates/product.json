@@ -1,9 +1,19 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "breadcrumb": {
       "type": "breadcrumb",
       "settings": {
         "home_label": "Startseite",
+        "aria_label": "Brotkrümelnavigation",
         "color_scheme": "scheme-1"
       }
     },
@@ -21,9 +31,23 @@
           "type": "title",
           "settings": {}
         },
+        "sku": {
+          "type": "sku",
+          "settings": {
+            "text_style": "body"
+          }
+        },
         "price": {
           "type": "price",
           "settings": {}
+        },
+        "inventory": {
+          "type": "inventory",
+          "settings": {
+            "text_style": "body",
+            "inventory_threshold": 10,
+            "show_inventory_quantity": true
+          }
         },
         "variant_picker": {
           "type": "variant_picker",
@@ -39,28 +63,14 @@
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
-            "show_dynamic_checkout": true,
+            "show_dynamic_checkout": false,
             "show_gift_card_recipient": true
           }
         },
-        "share": {
-          "type": "share",
+        "paylist": {
+          "type": "custom_liquid",
           "settings": {
-            "share_label": "Share"
-          }
-        },
-        "sku": {
-          "type": "sku",
-          "settings": {
-            "text_style": "body"
-          }
-        },
-        "inventory": {
-          "type": "inventory",
-          "settings": {
-            "text_style": "body",
-            "inventory_threshold": 10,
-            "show_inventory_quantity": true
+            "custom_liquid": "{%- if shop.enabled_payment_types.size > 0 -%}<ul class=\"vf-paylist list-unstyled\">{%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag: class: 'vf-paylist__icon' }}</li>{%- endfor -%}</ul>{%- endif -%}"
           }
         },
         "usp": {
@@ -75,10 +85,10 @@
             "heading_3": "Versand aus der EU"
           }
         },
-        "paylist": {
-          "type": "custom_liquid",
+        "share": {
+          "type": "share",
           "settings": {
-            "custom_liquid": "{%- if shop.enabled_payment_types.size > 0 -%}<ul class=\"vf-paylist list-unstyled\">{%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag: class: 'vf-paylist__icon' }}</li>{%- endfor -%}</ul>{%- endif -%}"
+            "share_label": "Share"
           }
         },
         "wishlist": {
@@ -103,6 +113,7 @@
         "share"
       ],
       "settings": {
+        "vielfalt_layout": true,
         "enable_sticky_info": true,
         "color_scheme": "scheme-1",
         "media_size": "large",
@@ -115,26 +126,7 @@
         "hide_variants": true,
         "enable_video_looping": false,
         "padding_top": 36,
-        "padding_bottom": 12,
-        "vielfalt_layout": true
-      }
-    },
-    "related-products": {
-      "type": "related-products",
-      "settings": {
-        "heading": "Passend dazu",
-        "heading_size": "h2",
-        "products_to_show": 4,
-        "columns_desktop": 4,
-        "columns_mobile": "2",
-        "color_scheme": "scheme-1",
-        "image_ratio": "square",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": true,
-        "show_rating": false,
-        "padding_top": 36,
-        "padding_bottom": 28
+        "padding_bottom": 12
       }
     },
     "product-tabs": {
@@ -153,9 +145,37 @@
       ],
       "settings": {
         "show_keyspec": true,
+        "label_description": "Beschreibung",
+        "label_specs": "Technische Daten",
+        "label_brand": "Marke",
+        "label_category": "Kategorie",
+        "label_sku": "Art.-Nr.",
+        "label_ean": "EAN",
+        "label_weight": "Gewicht",
+        "label_type": "Produktart",
+        "callout_heading": "",
+        "callout_body": "",
         "color_scheme": "scheme-1",
         "padding_top": 44,
         "padding_bottom": 32
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "Passend dazu",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": true,
+        "show_rating": false,
+        "padding_top": 36,
+        "padding_bottom": 28
       }
     }
   },
