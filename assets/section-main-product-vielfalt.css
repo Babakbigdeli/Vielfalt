@@ -171,7 +171,6 @@
   border-radius: 4px;
 }
 
-
 @media screen and (min-width: 750px) {
   .product--vielfalt .product__info-container {
     display: grid;
@@ -207,7 +206,6 @@
     margin-bottom: 0;
   }
 
-
   .product--vielfalt .product-form__quantity > .form__label,
   .product--vielfalt .product-form__quantity .quantity__rules-cart {
     position: absolute !important;
@@ -237,6 +235,10 @@
   font-weight: 700;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.product--vielfalt .product__info-container > .vf-wishlist {
+  margin-top: 12px;
 }
 
 .vf-wishlist:hover,
@@ -277,8 +279,6 @@
   margin: 0;
 }
 
-
-
 .product--vielfalt {
   --vf-primary: var(--color-button);
   --vf-primary-text: var(--color-button-text);
@@ -293,7 +293,6 @@
 .product--vielfalt .product-form__submit.button--secondary::after {
   --border-opacity: 0;
 }
-
 
 .product--vielfalt .shopify-payment-button {
   margin-top: 10px;
