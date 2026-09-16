@@ -43,6 +43,63 @@
     assign intro_html = desc_parts[0]
     assign spec_blob = desc_parts[1]
   endif
+
+  assign ex_raw = section.settings.features_exclude | downcase | replace: ', ', ',' | replace: ' ,', ','
+  assign ex_blob = ',' | append: ex_raw | append: ','
+
+  assign strip_blob = ',' | append: spec_labels | downcase | replace: '|', ',' | append: ','
+
+  assign feat_list = ''
+  assign tech_labels = ''
+  assign tech_values = ''
+  assign glance_labels = ''
+  assign glance_values = ''
+  assign glance_n = 0
+
+  if spec_blob != blank
+    assign spec_lines = spec_blob | strip_html | split: '•'
+    for line in spec_lines
+      assign entry = line | strip
+      if entry contains ':'
+        assign row_label = entry | split: ':' | first | strip
+        assign row_value = entry | remove_first: row_label | remove_first: ':' | strip
+        if row_label != blank and row_value != blank
+          assign row_flag = row_value | downcase
+          assign ex_key = ',' | append: row_label | downcase | append: ','
+
+          assign is_feat = false
+          if row_flag == 'ja'
+            unless ex_blob contains ex_key
+              assign is_feat = true
+            endunless
+          endif
+
+          if is_feat
+            assign feat_list = feat_list | append: row_label | append: '|'
+          endif
+
+          unless is_feat and section.settings.group_feature_rows
+            assign tech_labels = tech_labels | append: row_label | append: '|'
+            assign tech_values = tech_values | append: row_value | append: '|'
+          endunless
+
+          if glance_n < 4 and row_flag != 'ja' and row_flag != 'nein'
+            unless strip_blob contains ex_key
+              assign glance_labels = glance_labels | append: row_label | append: '|'
+              assign glance_values = glance_values | append: row_value | append: '|'
+              assign glance_n = glance_n | plus: 1
+            endunless
+          endif
+        endif
+      endif
+    endfor
+  endif
+
+  assign features = feat_list | split: '|'
+  assign tech_l = tech_labels | split: '|'
+  assign tech_v = tech_values | split: '|'
+  assign glance_l = glance_labels | split: '|'
+  assign glance_v = glance_values | split: '|'
 -%}
 
 {%- style -%}
@@ -123,7 +180,24 @@
           aria-labelledby="Tab-desc-{{ section.id }}"
         >
           <div class="tabs__grid">
-            <div class="rte tabs__prose">{{ intro_html }}</div>
+            <div class="tabs__proseblock">
+              <div class="rte tabs__prose">{{ intro_html }}</div>
+
+              {%- if features.size > 0 -%}
+                <div class="tabs__features">
+                  <h3>{{ section.settings.label_features | escape }}</h3>
+                  <ul class="tabs__featurelist" role="list">
+                    {%- for feature in features -%}
+                      <li>
+                        <span class="tabs__tick">{{ 'icon-vf-check.svg' | inline_asset_content }}</span>
+                        <span>{{ feature }}</span>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- endif -%}
+            </div>
+
             <aside class="tabs__aside">
               {%- if section.settings.callout_body != blank -%}
                 <div class="tabs__callout">
@@ -134,18 +208,25 @@
                 </div>
               {%- endif -%}
 
-              {%- if labels.size > 0 -%}
+              {%- if glance_l.size > 0 -%}
                 <table class="spectable">
                   <caption>{{ section.settings.label_glance | escape }}</caption>
                   <tbody>
-                    {%- for label in labels limit: 4 -%}
+                    {%- for label in glance_l -%}
                       <tr>
                         <th scope="row">{{ label }}</th>
-                        <td>{{ values[forloop.index0] }}</td>
+                        <td>{{ glance_v[forloop.index0] }}</td>
                       </tr>
                     {%- endfor -%}
                   </tbody>
                 </table>
+
+                {%- if section.settings.label_more != blank -%}
+                  <a class="tabs__morelink" href="#Panel-specs-{{ section.id }}" data-tab-target="Tab-specs-{{ section.id }}">
+                    {{- section.settings.label_more | escape -}}
+                    <span class="tabs__chev">{{ 'icon-vf-chevron.svg' | inline_asset_content }}</span>
+                  </a>
+                {%- endif -%}
               {%- endif -%}
             </aside>
           </div>
@@ -173,25 +254,23 @@
                 {%- endfor -%}
               {%- endif -%}
 
-              {%- if spec_blob != blank -%}
-                {%- assign spec_lines = spec_blob | strip_html | split: '•' -%}
-                {%- assign printed_group = false -%}
-                {%- for line in spec_lines -%}
-                  {%- assign entry = line | strip -%}
-                  {%- if entry contains ':' -%}
-                    {%- assign row_label = entry | split: ':' | first | strip -%}
-                    {%- assign row_value = entry | remove_first: row_label | remove_first: ':' | strip -%}
-                    {%- if row_label != blank and row_value != blank -%}
-                      {%- unless printed_group -%}
-                        <tr><th class="spectable__group" colspan="2">{{ section.settings.group_technical | escape }}</th></tr>
-                        {%- assign printed_group = true -%}
-                      {%- endunless -%}
-                      <tr>
-                        <th scope="row">{{ row_label }}</th>
-                        <td>{{ row_value }}</td>
-                      </tr>
-                    {%- endif -%}
-                  {%- endif -%}
+              {%- if tech_l.size > 0 -%}
+                <tr><th class="spectable__group" colspan="2">{{ section.settings.group_technical | escape }}</th></tr>
+                {%- for label in tech_l -%}
+                  <tr>
+                    <th scope="row">{{ label }}</th>
+                    <td>{{ tech_v[forloop.index0] }}</td>
+                  </tr>
+                {%- endfor -%}
+              {%- endif -%}
+
+              {%- if features.size > 0 and section.settings.group_feature_rows -%}
+                <tr><th class="spectable__group" colspan="2">{{ section.settings.group_features | escape }}</th></tr>
+                {%- for feature in features -%}
+                  <tr>
+                    <th scope="row">{{ feature }}</th>
+                    <td>Ja</td>
+                  </tr>
                 {%- endfor -%}
               {%- endif -%}
               </tbody>
@@ -221,6 +300,15 @@
   class ProductTabs extends HTMLElement {
     connectedCallback() {
       this.tabs = Array.from(this.querySelectorAll('[role="tab"]'));
+      this.querySelectorAll('[data-tab-target]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          const target = document.getElementById(link.getAttribute('data-tab-target'));
+          if (!target) return;
+          event.preventDefault();
+          this.select(target);
+          this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
       this.tabs.forEach((tab) => {
         tab.addEventListener('click', () => this.select(tab));
         tab.addEventListener('keydown', (event) => this.onKeydown(event, tab));
@@ -266,7 +354,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "The key-spec strip and the technical table are generated from each product's vendor, category, SKU, barcode, weight and type — no per-product data entry. Add extra tabs below for content that is the same on every product, such as shipping and returns."
+      "content": "Everything on this section is generated from data you already have: the key-spec strip from vendor, category, SKU, barcode, weight and type, and the Merkmale list, the 'Auf einen Blick' table and the technical table from the supplier spec sheet in the product description. No per-product data entry. Add extra tabs below for content that is the same on every product, such as shipping and returns."
     },
     { "type": "checkbox", "id": "show_keyspec", "label": "Show the key-spec strip", "default": true },
     { "type": "text", "id": "label_description", "label": "Description tab label", "default": "Beschreibung" },
@@ -280,7 +368,14 @@
     { "type": "text", "id": "label_type", "label": "Product type", "default": "Produktart" },
     { "type": "text", "id": "group_general", "label": "General group heading", "default": "Allgemein" },
     { "type": "text", "id": "group_technical", "label": "Technical group heading", "default": "Technische Daten" },
+    { "type": "text", "id": "group_features", "label": "Feature group heading", "default": "Ausstattung" },
+    { "type": "checkbox", "id": "group_feature_rows", "label": "Group the Ja/Nein feature rows at the end of the table", "info": "On: rows whose value is simply \"Ja\" are collected under the feature heading instead of sitting between the measurements. Nothing is removed either way.", "default": true },
+    { "type": "header", "content": "Beside the description" },
     { "type": "text", "id": "label_glance", "label": "Heading of the small table beside the description", "default": "Auf einen Blick" },
+    { "type": "text", "id": "label_more", "label": "Link under that table", "default": "Alle technischen Daten ansehen" },
+    { "type": "header", "content": "Merkmale list" },
+    { "type": "text", "id": "label_features", "label": "Feature list heading", "default": "Merkmale" },
+    { "type": "textarea", "id": "features_exclude", "label": "Never show these as features", "info": "Comma-separated spec labels. A row whose value is \"Ja\" but whose label reads badly on its own belongs here \u2014 it stays in the technical table.", "default": "Unterst\u00fctzte Linux-Betriebssysteme, Unterst\u00fctzte Mac-Betriebssysteme, Unterst\u00fctzte Windows-Betriebssysteme, Unterst\u00fctzte mobile Betriebssysteme" },
     { "type": "header", "content": "Callout beside the description" },
     { "type": "text", "id": "callout_heading", "label": "Callout heading" },
     { "type": "richtext", "id": "callout_body", "label": "Callout text" },
