@@ -43,10 +43,6 @@
             "show_gift_card_recipient": true
           }
         },
-        "description": {
-          "type": "description",
-          "settings": {}
-        },
         "share": {
           "type": "share",
           "settings": {
@@ -90,7 +86,6 @@
         "quantity_selector",
         "buy_buttons",
         "usp",
-        "description",
         "share"
       ],
       "settings": {
@@ -127,11 +122,33 @@
         "padding_top": 36,
         "padding_bottom": 28
       }
+    },
+    "product-tabs": {
+      "type": "product-tabs",
+      "blocks": {
+        "shipping": {
+          "type": "tab",
+          "settings": {
+            "heading": "Versand & Rückgabe",
+            "content": "<p>Versand aus der EU. Die Lieferzeit entnehmen Sie bitte der Versandseite.</p><p>Sie haben 14 Tage Widerrufsrecht ab Erhalt der Ware.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "shipping"
+      ],
+      "settings": {
+        "show_keyspec": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 44,
+        "padding_bottom": 32
+      }
     }
   },
   "order": [
     "breadcrumb",
     "main",
+    "product-tabs",
     "related-products"
   ]
 }

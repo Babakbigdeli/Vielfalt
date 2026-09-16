@@ -1,0 +1,252 @@
+{{ 'section-product-tabs.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  assign unter = product.metafields.custom.unterkategorie.value
+
+  assign spec_labels = ''
+  assign spec_values = ''
+
+  if product.vendor != blank
+    assign spec_labels = spec_labels | append: section.settings.label_brand | append: '|'
+    assign spec_values = spec_values | append: product.vendor | append: '|'
+  endif
+  if unter != blank
+    assign spec_labels = spec_labels | append: section.settings.label_category | append: '|'
+    assign spec_values = spec_values | append: unter | append: '|'
+  endif
+  if v.sku != blank
+    assign spec_labels = spec_labels | append: section.settings.label_sku | append: '|'
+    assign spec_values = spec_values | append: v.sku | append: '|'
+  endif
+  if v.barcode != blank
+    assign spec_labels = spec_labels | append: section.settings.label_ean | append: '|'
+    assign spec_values = spec_values | append: v.barcode | append: '|'
+  endif
+  if v.weight > 0
+    assign weight_text = v.weight | weight_with_unit: v.weight_unit
+    assign spec_labels = spec_labels | append: section.settings.label_weight | append: '|'
+    assign spec_values = spec_values | append: weight_text | append: '|'
+  endif
+  if product.type != blank
+    assign spec_labels = spec_labels | append: section.settings.label_type | append: '|'
+    assign spec_values = spec_values | append: product.type | append: '|'
+  endif
+
+  assign labels = spec_labels | split: '|'
+  assign values = spec_values | split: '|'
+-%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="product-tabs color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding">
+    {%- if section.settings.show_keyspec and labels.size > 0 -%}
+      <dl class="keyspec">
+        {%- for label in labels -%}
+          <div class="keyspec__cell">
+            <dt>{{ label }}</dt>
+            <dd>{{ values[forloop.index0] }}</dd>
+          </div>
+        {%- endfor -%}
+      </dl>
+    {%- endif -%}
+
+    <product-tabs class="tabs">
+      <div class="tabs__list" role="tablist">
+        {%- if product.description != blank -%}
+          <button
+            class="tabs__tab"
+            type="button"
+            role="tab"
+            id="Tab-desc-{{ section.id }}"
+            aria-controls="Panel-desc-{{ section.id }}"
+            aria-selected="true"
+          >
+            {{- section.settings.label_description | escape -}}
+          </button>
+        {%- endif -%}
+
+        {%- if labels.size > 0 -%}
+          <button
+            class="tabs__tab"
+            type="button"
+            role="tab"
+            id="Tab-specs-{{ section.id }}"
+            aria-controls="Panel-specs-{{ section.id }}"
+            aria-selected="{% if product.description == blank %}true{% else %}false{% endif %}"
+          >
+            {{- section.settings.label_specs | escape -}}
+          </button>
+        {%- endif -%}
+
+        {%- for block in section.blocks -%}
+          <button
+            class="tabs__tab"
+            type="button"
+            role="tab"
+            id="Tab-{{ block.id }}"
+            aria-controls="Panel-{{ block.id }}"
+            aria-selected="false"
+            {{ block.shopify_attributes }}
+          >
+            {{- block.settings.heading | escape -}}
+          </button>
+        {%- endfor -%}
+      </div>
+
+      {%- if product.description != blank -%}
+        <div
+          class="tabs__panel tabs__panel--open"
+          role="tabpanel"
+          id="Panel-desc-{{ section.id }}"
+          aria-labelledby="Tab-desc-{{ section.id }}"
+        >
+          <div class="tabs__grid">
+            <div class="rte tabs__prose">{{ product.description }}</div>
+            {%- if section.settings.callout_body != blank -%}
+              <aside class="tabs__callout">
+                {%- if section.settings.callout_heading != blank -%}
+                  <b>{{ section.settings.callout_heading | escape }}</b>
+                {%- endif -%}
+                {{ section.settings.callout_body }}
+              </aside>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if labels.size > 0 -%}
+        <div
+          class="tabs__panel{% if product.description == blank %} tabs__panel--open{% endif %}"
+          role="tabpanel"
+          id="Panel-specs-{{ section.id }}"
+          aria-labelledby="Tab-specs-{{ section.id }}"
+        >
+          <table class="spectable">
+            <caption>{{ section.settings.label_specs | escape }}</caption>
+            <tbody>
+              {%- for label in labels -%}
+                <tr>
+                  <th scope="row">{{ label }}</th>
+                  <td>{{ values[forloop.index0] }}</td>
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+        </div>
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        <div
+          class="tabs__panel"
+          role="tabpanel"
+          id="Panel-{{ block.id }}"
+          aria-labelledby="Tab-{{ block.id }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="tabs__grid">
+            <div class="rte tabs__prose">{{ block.settings.content }}</div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </product-tabs>
+  </div>
+</div>
+
+{% javascript %}
+  class ProductTabs extends HTMLElement {
+    connectedCallback() {
+      this.tabs = Array.from(this.querySelectorAll('[role="tab"]'));
+      this.tabs.forEach((tab) => {
+        tab.addEventListener('click', () => this.select(tab));
+        tab.addEventListener('keydown', (event) => this.onKeydown(event, tab));
+      });
+      this.setTabindexes();
+    }
+
+    setTabindexes() {
+      this.tabs.forEach((tab) => {
+        tab.tabIndex = tab.getAttribute('aria-selected') === 'true' ? 0 : -1;
+      });
+    }
+
+    select(tab) {
+      this.tabs.forEach((other) => {
+        const open = other === tab;
+        other.setAttribute('aria-selected', open ? 'true' : 'false');
+        const panel = document.getElementById(other.getAttribute('aria-controls'));
+        if (panel) panel.classList.toggle('tabs__panel--open', open);
+      });
+      this.setTabindexes();
+      tab.focus();
+    }
+
+    onKeydown(event, tab) {
+      const keys = { ArrowRight: 1, ArrowLeft: -1 };
+      if (!(event.key in keys)) return;
+      event.preventDefault();
+      const next = this.tabs[(this.tabs.indexOf(tab) + keys[event.key] + this.tabs.length) % this.tabs.length];
+      this.select(next);
+    }
+  }
+
+  customElements.define('product-tabs', ProductTabs);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Product tabs",
+  "tag": "section",
+  "class": "section-product-tabs",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The key-spec strip and the technical table are generated from each product's vendor, category, SKU, barcode, weight and type — no per-product data entry. Add extra tabs below for content that is the same on every product, such as shipping and returns."
+    },
+    { "type": "checkbox", "id": "show_keyspec", "label": "Show the key-spec strip", "default": true },
+    { "type": "text", "id": "label_description", "label": "Description tab label", "default": "Beschreibung" },
+    { "type": "text", "id": "label_specs", "label": "Technical data tab label", "default": "Technische Daten" },
+    { "type": "header", "content": "Spec row labels" },
+    { "type": "text", "id": "label_brand", "label": "Brand", "default": "Marke" },
+    { "type": "text", "id": "label_category", "label": "Category", "default": "Kategorie" },
+    { "type": "text", "id": "label_sku", "label": "Article number", "default": "Art.-Nr." },
+    { "type": "text", "id": "label_ean", "label": "Barcode", "default": "EAN" },
+    { "type": "text", "id": "label_weight", "label": "Weight", "default": "Gewicht" },
+    { "type": "text", "id": "label_type", "label": "Product type", "default": "Produktart" },
+    { "type": "header", "content": "Callout beside the description" },
+    { "type": "text", "id": "callout_heading", "label": "Callout heading" },
+    { "type": "richtext", "id": "callout_body", "label": "Callout text" },
+    { "type": "header", "content": "Layout" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding top", "default": 44 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding bottom", "default": 32 }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Tab label", "default": "Versand & Rückgabe" },
+        { "type": "richtext", "id": "content", "label": "Tab content" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Product tabs" }
+  ]
+}
+{% endschema %}
