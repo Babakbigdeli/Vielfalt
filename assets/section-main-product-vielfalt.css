@@ -96,8 +96,6 @@
   line-height: 1;
 }
 
-/* the struck compare-at price is an <s> in Dawn — `price-item--regular` is the live
-   price, so selecting it on the class alone shrinks the real price back to 17px */
 .product--vielfalt .price--large s.price-item {
   font-size: 17px;
   font-weight: 400;
@@ -173,22 +171,88 @@
   border-radius: 4px;
 }
 
+
 @media screen and (min-width: 750px) {
-  .product--vielfalt .product-form__quantity,
-  .product--vielfalt .product-form__buttons {
-    display: inline-block;
-    vertical-align: bottom;
+  .product--vielfalt .product__info-container {
+    display: grid;
+    grid-template-columns: 134px minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: start;
+  }
+
+  .product--vielfalt .product__info-container > * {
+    grid-column: 1 / -1;
+    min-width: 0;
   }
 
   .product--vielfalt .product-form__quantity {
-    width: 134px;
-    margin-right: 12px;
+    grid-column: 1;
+    align-self: end;
+    margin: 18px 0 0;
   }
 
-  .product--vielfalt .product-form__buttons {
-    width: calc(100% - 146px);
+  .product--vielfalt .product-form__quantity + div {
+    grid-column: 2;
+    align-self: end;
+    margin: 18px 0 0;
+  }
+
+  .product--vielfalt .product-form__quantity + div product-form,
+  .product--vielfalt .product-form__quantity + div .product-form__buttons {
+    margin: 0;
     max-width: none;
   }
+
+  .product--vielfalt .product-form__quantity + div .product-form__submit {
+    margin-bottom: 0;
+  }
+
+
+  .product--vielfalt .product-form__quantity > .form__label,
+  .product--vielfalt .product-form__quantity .quantity__rules-cart {
+    position: absolute !important;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+  }
+}
+
+.vf-wishlist {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  height: 46px;
+  margin: 12px 0 0;
+  border: 2px solid rgba(var(--color-foreground), 0.14);
+  border-radius: 4px;
+  background: none;
+  color: rgb(var(--color-foreground));
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.vf-wishlist:hover,
+.vf-wishlist[aria-pressed='true'] {
+  border-color: #0fb1d8;
+  background: #f0fcff;
+  color: #096880;
+}
+
+.vf-wishlist[aria-pressed='true'] svg {
+  fill: #0fb1d8;
+}
+
+.vf-wishlist .svg-wrapper {
+  width: 18px;
+  height: 18px;
 }
 
 .product--vielfalt .product__accordion,
@@ -214,11 +278,7 @@
 }
 
 
-/* ---------- the primary button ----------
-   Dawn demotes add-to-cart to `button--secondary` as soon as the dynamic checkout button
-   is switched on, so the mockup's yellow button never appeared. Capture the scheme's
-   primary colours on the wrapper — where `--color-button` still holds them — and hand
-   them back to the button, rather than hardcoding yellow. */
+
 .product--vielfalt {
   --vf-primary: var(--color-button);
   --vf-primary-text: var(--color-button-text);
@@ -234,7 +294,7 @@
   --border-opacity: 0;
 }
 
-/* the express checkout button reads as the alternative, not the hero */
+
 .product--vielfalt .shopify-payment-button {
   margin-top: 10px;
 }
@@ -243,7 +303,6 @@
   font-size: 13px;
 }
 
-/* ---------- payment methods ---------- */
 .vf-paylist {
   display: flex;
   align-items: center;
@@ -261,7 +320,6 @@
   border-radius: 3px;
 }
 
-/* ---------- small type corrections against the mockup ---------- */
 .product--vielfalt .product-form__quantity .form__label {
   font-size: 13px;
   color: rgba(var(--color-foreground), 0.7);

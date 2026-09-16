@@ -80,6 +80,12 @@
           "settings": {
             "custom_liquid": "{%- if shop.enabled_payment_types.size > 0 -%}<ul class=\"vf-paylist list-unstyled\">{%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag: class: 'vf-paylist__icon' }}</li>{%- endfor -%}</ul>{%- endif -%}"
           }
+        },
+        "wishlist": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "<button type=\"button\" class=\"vf-wishlist\" aria-pressed=\"false\" data-vf-wishlist=\"{{ product.handle }}\"><span class=\"svg-wrapper\" aria-hidden=\"true\">{{ 'icon-vf-heart.svg' | inline_asset_content }}</span><span class=\"vf-wishlist__label\" data-on=\"Gemerkt\" data-off=\"Auf die Merkliste\">Auf die Merkliste</span></button><script>(function(){var b=document.currentScript.previousElementSibling,K=\"vielfalt:wishlist\",h=b.dataset.vfWishlist,l=b.querySelector(\".vf-wishlist__label\");function read(){try{return JSON.parse(localStorage.getItem(K))||[]}catch(e){return[]}}function write(v){try{localStorage.setItem(K,JSON.stringify(v))}catch(e){}}function paint(on){b.setAttribute(\"aria-pressed\",on?\"true\":\"false\");l.textContent=on?l.dataset.on:l.dataset.off;}paint(read().indexOf(h)>-1);b.addEventListener(\"click\",function(){var v=read(),i=v.indexOf(h);if(i>-1){v.splice(i,1)}else{v.push(h)}write(v);paint(i===-1);});}());</script>"
+          }
         }
       },
       "block_order": [
@@ -91,6 +97,7 @@
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
+        "wishlist",
         "paylist",
         "usp",
         "share"
