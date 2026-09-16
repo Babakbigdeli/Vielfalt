@@ -1,0 +1,125 @@
+{%- liquid
+  assign p = card_product
+  assign v = p.selected_or_first_available_variant
+  assign on_sale = false
+  if p.compare_at_price > p.price
+    assign on_sale = true
+    assign off = p.compare_at_price | minus: p.price | times: 100.0 | divided_by: p.compare_at_price | round
+  endif
+
+  assign low = false
+  if p.available and p.variants.size == 1 and v.inventory_management != blank and v.inventory_policy == 'deny'
+    if v.inventory_quantity > 0 and v.inventory_quantity <= low_threshold
+      assign low = true
+    endif
+  endif
+
+  assign rating = p.metafields.reviews.rating.value
+  assign rating_count = p.metafields.reviews.rating_count.value
+
+
+  assign badge_text = ''
+  if badge_prefix != blank
+    assign prefix_len = badge_prefix | size
+    for tag in p.tags
+      assign head = tag | slice: 0, prefix_len
+      if head == badge_prefix
+        assign badge_text = tag | remove_first: badge_prefix | strip
+        break
+      endif
+    endfor
+  endif
+-%}
+
+<article class="vfcard">
+  {%- if on_sale or badge_text != blank or p.available == false -%}
+    <div class="vfcard__badges">
+      {%- if p.available == false -%}
+        <span class="vfcard__badge vfcard__badge--ink">{{ label_sold_out | default: 'Ausverkauft' }}</span>
+      {%- else -%}
+        {%- if on_sale -%}
+          <span class="vfcard__badge vfcard__badge--save">&minus;{{ off }}%</span>
+        {%- endif -%}
+        {%- if badge_text != blank -%}
+          <span class="vfcard__badge vfcard__badge--top">{{ badge_text }}</span>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <a class="vfcard__media{% if show_secondary and p.media[1] %} vfcard__media--swap{% endif %}" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+    {%- if p.featured_media -%}
+      <img
+        src="{{ p.featured_media | image_url: width: 600 }}"
+        srcset="{{ p.featured_media | image_url: width: 300 }} 300w, {{ p.featured_media | image_url: width: 600 }} 600w, {{ p.featured_media | image_url: width: 900 }} 900w"
+        sizes="(min-width: 990px) 300px, (min-width: 750px) 33vw, 45vw"
+        alt=""
+        width="{{ p.featured_media.width }}"
+        height="{{ p.featured_media.height }}"
+        {% if lazy %}loading="lazy"{% endif %}
+        class="vfcard__img"
+      >
+      {%- if show_secondary and p.media[1] -%}
+        <img
+          src="{{ p.media[1] | image_url: width: 600 }}"
+          alt=""
+          width="{{ p.media[1].width }}"
+          height="{{ p.media[1].height }}"
+          loading="lazy"
+          class="vfcard__img vfcard__img--second"
+        >
+      {%- endif -%}
+    {%- else -%}
+      {{ 'product-apparel-1' | placeholder_svg_tag: 'vfcard__placeholder' }}
+    {%- endif -%}
+  </a>
+
+  <div class="vfcard__body">
+    {%- if show_vendor and p.vendor != blank -%}
+      <span class="vfcard__vendor">{{ p.vendor }}</span>
+    {%- endif -%}
+
+    <a class="vfcard__title" href="{{ p.url }}">{{ p.title }}</a>
+
+    {%- if show_rating and rating.rating -%}
+      {%- assign full = rating.rating | round -%}
+      <div class="vfcard__rating">
+        <div class="vfcard__stars" role="img" aria-label="{{ rating.rating }} / {{ rating.scale_max }}">
+          {%- for i in (1..5) -%}
+            <span class="vfcard__star{% if forloop.index > full %} vfcard__star--off{% endif %}">
+              {{- 'icon-vf-star.svg' | inline_asset_content -}}
+            </span>
+          {%- endfor -%}
+        </div>
+        <span>{{ rating.rating }}{% if rating_count %} <span class="vfcard__ratingcount">({{ rating_count }})</span>{% endif %}</span>
+      </div>
+    {%- endif -%}
+
+    <div class="vfcard__price">
+      <b>{% if p.price_varies %}{{ label_from | default: 'ab' }} {% endif %}{{ p.price | money }}</b>
+      {%- if on_sale -%}<s>{{ p.compare_at_price | money }}</s>{%- endif -%}
+    </div>
+
+    {%- if tax_note != blank -%}
+      <span class="vfcard__tax">
+        {{- tax_note }}
+        {%- if tax_link != blank %}
+          <a href="{{ shop.shipping_policy.url | default: '/policies/shipping-policy' }}">{{ tax_link }}</a>
+        {%- endif -%}
+      </span>
+    {%- endif -%}
+
+    <span class="vfcard__stock">
+      {%- if p.available -%}
+        <i class="vfcard__dot{% if low %} vfcard__dot--low{% endif %}"></i>
+        {%- if low -%}
+          {{ label_low | default: 'Nur noch [count] verfügbar' | replace: '[count]', v.inventory_quantity }}
+        {%- else -%}
+          {{ label_in_stock | default: 'Auf Lager' }}{% if stock_suffix != blank %} – {{ stock_suffix }}{% endif %}
+        {%- endif -%}
+      {%- else -%}
+        <i class="vfcard__dot vfcard__dot--out"></i>{{ label_out_stock | default: 'Derzeit nicht verfügbar' }}
+      {%- endif -%}
+    </span>
+  </div>
+</article>

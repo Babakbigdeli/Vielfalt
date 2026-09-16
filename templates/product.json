@@ -161,21 +161,30 @@
       }
     },
     "related-products": {
-      "type": "related-products",
+      "type": "related-products-vielfalt",
       "settings": {
-        "heading": "Passend dazu",
-        "heading_size": "h2",
+        "kicker": "Passend dazu",
+        "heading": "Ähnliche Artikel",
         "products_to_show": 4,
         "columns_desktop": 4,
-        "columns_mobile": "2",
-        "color_scheme": "scheme-1",
-        "image_ratio": "square",
-        "image_shape": "default",
-        "show_secondary_image": true,
+        "intent": "related",
+        "link_prefix": "Alle",
         "show_vendor": true,
-        "show_rating": false,
-        "padding_top": 36,
-        "padding_bottom": 28
+        "show_rating": true,
+        "show_secondary_image": false,
+        "label_from": "ab",
+        "tax_note": "inkl. MwSt. zzgl.",
+        "tax_link": "Versandkosten",
+        "label_in_stock": "Auf Lager",
+        "stock_suffix": "",
+        "low_threshold": 5,
+        "label_low": "Nur noch [count] verfügbar",
+        "label_out_stock": "Derzeit nicht verfügbar",
+        "label_sold_out": "Ausverkauft",
+        "color_scheme": "scheme-1",
+        "padding_top": 56,
+        "padding_bottom": 56,
+        "badge_prefix": "badge:"
       }
     }
   },
