@@ -181,10 +181,10 @@
         "label_low": "Nur noch [count] verfügbar",
         "label_out_stock": "Derzeit nicht verfügbar",
         "label_sold_out": "Ausverkauft",
+        "badge_prefix": "badge:",
         "color_scheme": "scheme-1",
         "padding_top": 56,
-        "padding_bottom": 56,
-        "badge_prefix": "badge:"
+        "padding_bottom": 56
       }
     }
   },
