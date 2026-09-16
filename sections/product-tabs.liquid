@@ -35,6 +35,14 @@
 
   assign labels = spec_labels | split: '|'
   assign values = spec_values | split: '|'
+
+  assign intro_html = product.description
+  assign spec_blob = ''
+  if product.description contains '<p>Technische Daten'
+    assign desc_parts = product.description | split: '<p>Technische Daten'
+    assign intro_html = desc_parts[0]
+    assign spec_blob = desc_parts[1]
+  endif
 -%}
 
 {%- style -%}
@@ -115,15 +123,31 @@
           aria-labelledby="Tab-desc-{{ section.id }}"
         >
           <div class="tabs__grid">
-            <div class="rte tabs__prose">{{ product.description }}</div>
-            {%- if section.settings.callout_body != blank -%}
-              <aside class="tabs__callout">
-                {%- if section.settings.callout_heading != blank -%}
-                  <b>{{ section.settings.callout_heading | escape }}</b>
-                {%- endif -%}
-                {{ section.settings.callout_body }}
-              </aside>
-            {%- endif -%}
+            <div class="rte tabs__prose">{{ intro_html }}</div>
+            <aside class="tabs__aside">
+              {%- if section.settings.callout_body != blank -%}
+                <div class="tabs__callout">
+                  {%- if section.settings.callout_heading != blank -%}
+                    <b>{{ section.settings.callout_heading | escape }}</b>
+                  {%- endif -%}
+                  {{ section.settings.callout_body }}
+                </div>
+              {%- endif -%}
+
+              {%- if labels.size > 0 -%}
+                <table class="spectable">
+                  <caption>{{ section.settings.label_glance | escape }}</caption>
+                  <tbody>
+                    {%- for label in labels limit: 4 -%}
+                      <tr>
+                        <th scope="row">{{ label }}</th>
+                        <td>{{ values[forloop.index0] }}</td>
+                      </tr>
+                    {%- endfor -%}
+                  </tbody>
+                </table>
+              {%- endif -%}
+            </aside>
           </div>
         </div>
       {%- endif -%}
@@ -135,17 +159,44 @@
           id="Panel-specs-{{ section.id }}"
           aria-labelledby="Tab-specs-{{ section.id }}"
         >
-          <table class="spectable">
+          <div class="tabs__grid">
+            <table class="spectable">
             <caption>{{ section.settings.label_specs | escape }}</caption>
             <tbody>
-              {%- for label in labels -%}
-                <tr>
-                  <th scope="row">{{ label }}</th>
-                  <td>{{ values[forloop.index0] }}</td>
-                </tr>
-              {%- endfor -%}
-            </tbody>
-          </table>
+              {%- if labels.size > 0 -%}
+                <tr><th class="spectable__group" colspan="2">{{ section.settings.group_general | escape }}</th></tr>
+                {%- for label in labels -%}
+                  <tr>
+                    <th scope="row">{{ label }}</th>
+                    <td>{{ values[forloop.index0] }}</td>
+                  </tr>
+                {%- endfor -%}
+              {%- endif -%}
+
+              {%- if spec_blob != blank -%}
+                {%- assign spec_lines = spec_blob | strip_html | split: '•' -%}
+                {%- assign printed_group = false -%}
+                {%- for line in spec_lines -%}
+                  {%- assign entry = line | strip -%}
+                  {%- if entry contains ':' -%}
+                    {%- assign row_label = entry | split: ':' | first | strip -%}
+                    {%- assign row_value = entry | remove_first: row_label | remove_first: ':' | strip -%}
+                    {%- if row_label != blank and row_value != blank -%}
+                      {%- unless printed_group -%}
+                        <tr><th class="spectable__group" colspan="2">{{ section.settings.group_technical | escape }}</th></tr>
+                        {%- assign printed_group = true -%}
+                      {%- endunless -%}
+                      <tr>
+                        <th scope="row">{{ row_label }}</th>
+                        <td>{{ row_value }}</td>
+                      </tr>
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+              </tbody>
+            </table>
+          </div>
         </div>
       {%- endif -%}
 
@@ -227,6 +278,9 @@
     { "type": "text", "id": "label_ean", "label": "Barcode", "default": "EAN" },
     { "type": "text", "id": "label_weight", "label": "Weight", "default": "Gewicht" },
     { "type": "text", "id": "label_type", "label": "Product type", "default": "Produktart" },
+    { "type": "text", "id": "group_general", "label": "General group heading", "default": "Allgemein" },
+    { "type": "text", "id": "group_technical", "label": "Technical group heading", "default": "Technische Daten" },
+    { "type": "text", "id": "label_glance", "label": "Heading of the small table beside the description", "default": "Auf einen Blick" },
     { "type": "header", "content": "Callout beside the description" },
     { "type": "text", "id": "callout_heading", "label": "Callout heading" },
     { "type": "richtext", "id": "callout_body", "label": "Callout text" },

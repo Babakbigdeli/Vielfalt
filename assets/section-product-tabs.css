@@ -89,10 +89,31 @@
   line-height: 1.72;
 }
 
+.tabs__prose > p + p {
+  margin-top: 14px;
+}
+
+.tabs__prose > p:first-child {
+  margin-top: 0;
+}
+
+.tabs__prose ul {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+  padding-left: 1.2em;
+}
+
 .tabs__prose h3 {
   margin: 26px 0 10px;
   font-size: 17px;
   font-weight: 800;
+}
+
+.tabs__aside {
+  display: grid;
+  gap: 16px;
+  align-content: start;
 }
 
 .tabs__callout {
@@ -142,6 +163,22 @@
 
 .spectable td {
   font-weight: 600;
+}
+
+.spectable__group {
+  width: auto !important;
+  padding-top: 22px !important;
+  border-bottom: 2px solid rgb(var(--color-foreground)) !important;
+  background: rgb(var(--color-background)) !important;
+  color: rgb(var(--color-foreground)) !important;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.spectable tr:first-child .spectable__group {
+  padding-top: 0 !important;
 }
 
 .spectable tbody tr:nth-child(odd) {
