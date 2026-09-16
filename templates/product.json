@@ -74,6 +74,12 @@
             "icon_3": "truck",
             "heading_3": "Versand aus der EU"
           }
+        },
+        "paylist": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{%- if shop.enabled_payment_types.size > 0 -%}<ul class=\"vf-paylist list-unstyled\">{%- for type in shop.enabled_payment_types -%}<li>{{ type | payment_type_svg_tag: class: 'vf-paylist__icon' }}</li>{%- endfor -%}</ul>{%- endif -%}"
+          }
         }
       },
       "block_order": [
@@ -85,6 +91,7 @@
         "variant_picker",
         "quantity_selector",
         "buy_buttons",
+        "paylist",
         "usp",
         "share"
       ],
