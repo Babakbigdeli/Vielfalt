@@ -1,3 +1,7 @@
+product-recommendations.vfcards {
+  display: block;
+}
+
 .vfcards {
   --vf-line: rgba(var(--color-foreground), 0.11);
   --vf-line-soft: rgba(var(--color-foreground), 0.06);
@@ -103,7 +107,7 @@
 }
 
 .vfcard__badge {
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 800;
   letter-spacing: 0.04em;
   padding: 4px 9px;
@@ -133,7 +137,7 @@
   border-bottom: 1px solid var(--vf-line-soft);
   display: grid;
   place-items: center;
-  padding: 18px;
+  padding: 14px;
   overflow: hidden;
 }
 
@@ -156,15 +160,15 @@
 }
 
 .vfcard__body {
-  padding: 14px 14px 16px;
+  padding: 12px 12px 14px;
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 7px;
+  gap: 6px;
 }
 
 .vfcard__vendor {
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -172,7 +176,7 @@
 }
 
 .vfcard__title {
-  font-size: 14.5px;
+  font-size: 13.5px;
   font-weight: 600;
   line-height: 1.35;
   color: inherit;
@@ -199,7 +203,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--vf-muted);
 }
 
@@ -210,8 +214,8 @@
 }
 
 .vfcard__stars svg {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
 }
 
 .vfcard__star--off {
@@ -230,19 +234,19 @@
 }
 
 .vfcard__price b {
-  font-size: 21px;
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 
 .vfcard__price s {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--vf-muted);
   text-decoration-thickness: 1.5px;
 }
 
 .vfcard__tax {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--vf-muted);
 }
 
@@ -257,7 +261,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   color: rgba(var(--color-foreground), 0.86);
   margin-top: auto;
@@ -265,8 +269,8 @@
 }
 
 .vfcard__dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: #1e9e5a;
   flex: none;
@@ -293,15 +297,15 @@
   }
 
   .vfcard__media {
-    padding: 12px;
+    padding: 10px;
   }
 
   .vfcard__body {
-    padding: 12px 12px 14px;
+    padding: 10px 10px 12px;
   }
 
   .vfcard__price b {
-    font-size: 19px;
+    font-size: 17px;
   }
 }
 
