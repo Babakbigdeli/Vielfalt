@@ -1,0 +1,135 @@
+{{ 'section-breadcrumb.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign dept_handle = ''
+  assign kat_handle = ''
+
+  if template.name == 'product'
+    for tag in product.tags
+      assign head = tag | slice: 0, 10
+      if head == 'abteilung:'
+        assign dept_handle = tag | remove_first: 'abteilung:'
+      elsif head == 'kategorie:'
+        assign kat_handle = tag | remove_first: 'kategorie:'
+      endif
+    endfor
+    assign dept = collections[dept_handle]
+    assign kat = collections[kat_handle]
+    assign leaf = product.title
+  elsif template.name == 'collection'
+    assign leaf = collection.title
+  elsif template.name == 'page'
+    assign leaf = page.title
+  endif
+-%}
+
+{%- if leaf != blank -%}
+  <nav
+    class="breadcrumb color-{{ section.settings.color_scheme }} gradient"
+    aria-label="{{ section.settings.aria_label | default: 'Brotkrümelnavigation' | escape }}"
+  >
+    <ol class="breadcrumb__list page-width list-unstyled" role="list">
+      <li class="breadcrumb__item">
+        <a href="{{ routes.root_url }}" class="breadcrumb__link">
+          {{- section.settings.home_label | default: 'Startseite' | escape -}}
+        </a>
+      </li>
+
+      {%- if dept != empty and dept.handle != blank -%}
+        <li class="breadcrumb__sep" aria-hidden="true">/</li>
+        <li class="breadcrumb__item">
+          <a href="{{ dept.url }}" class="breadcrumb__link">{{ dept.title | escape }}</a>
+        </li>
+      {%- endif -%}
+
+      {%- if kat != empty and kat.handle != blank -%}
+        <li class="breadcrumb__sep" aria-hidden="true">/</li>
+        <li class="breadcrumb__item">
+          <a href="{{ kat.url }}" class="breadcrumb__link">{{ kat.title | escape }}</a>
+        </li>
+      {%- endif -%}
+
+      <li class="breadcrumb__sep" aria-hidden="true">/</li>
+      <li class="breadcrumb__item breadcrumb__item--current" aria-current="page">
+        {{- leaf | escape -}}
+      </li>
+    </ol>
+  </nav>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": {{ section.settings.home_label | default: 'Startseite' | json }},
+          "item": {{ request.origin | append: routes.root_url | json }}
+        }
+        {%- assign pos = 1 -%}
+        {%- if dept != empty and dept.handle != blank -%}
+          {%- assign pos = pos | plus: 1 -%}
+          ,{
+            "@type": "ListItem",
+            "position": {{ pos }},
+            "name": {{ dept.title | json }},
+            "item": {{ request.origin | append: dept.url | json }}
+          }
+        {%- endif -%}
+        {%- if kat != empty and kat.handle != blank -%}
+          {%- assign pos = pos | plus: 1 -%}
+          ,{
+            "@type": "ListItem",
+            "position": {{ pos }},
+            "name": {{ kat.title | json }},
+            "item": {{ request.origin | append: kat.url | json }}
+          }
+        {%- endif -%}
+        {%- assign pos = pos | plus: 1 -%}
+        ,{
+          "@type": "ListItem",
+          "position": {{ pos }},
+          "name": {{ leaf | json }}
+        }
+      ]
+    }
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Breadcrumb",
+  "tag": "section",
+  "class": "section-breadcrumb",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Built from each product's abteilung: and kategorie: tags, so it always matches the taxonomy even when a visitor arrives from search. Also emits BreadcrumbList structured data for Google."
+    },
+    {
+      "type": "text",
+      "id": "home_label",
+      "label": "Home label",
+      "default": "Startseite"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible label",
+      "default": "Brotkrümelnavigation"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumb"
+    }
+  ]
+}
+{% endschema %}
