@@ -2,6 +2,11 @@
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 
+{%- if section.settings.vielfalt_layout -%}
+  {{ 'component-card-vielfalt.css' | asset_url | stylesheet_tag }}
+  {{ 'section-collection-vielfalt.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+
 {% if section.settings.image_shape == 'blob' %}
   {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
 {%- endif -%}
@@ -36,12 +41,83 @@
   }
 {%- endstyle -%}
 
-<div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
+<div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}{% if section.settings.vielfalt_layout %} collection--vf{% endif %}">
   {%- paginate collection.products by section.settings.products_per_page -%}
-    {% comment %} Sort is the first tabbable element when filter type is vertical {% endcomment %}
     {%- if section.settings.enable_sorting and section.settings.filter_type == 'vertical' -%}
       <facet-filters-form class="facets facets-vertical-sort page-width small-hide">
         <form class="facets-vertical-form" id="FacetSortForm">
+          {%- if section.settings.vielfalt_layout -%}<div class="vftoolbar">{%- endif -%}
+
+          {%- if section.settings.vielfalt_layout and section.settings.enable_filtering -%}
+            <button class="vftoggle" type="button" data-vf-toggle-filters>
+              {{ 'icon-vf-sliders.svg' | inline_asset_content }}
+              <span class="vftoggle__label"
+                data-on="{{ section.settings.label_hide_filters | escape }}"
+                data-off="{{ section.settings.label_show_filters | escape }}"
+              >{{ section.settings.label_hide_filters | escape }}</span>
+            </button>
+
+            <div class="active-facets active-facets-desktop vfchips">
+              {%- for filter in collection.filters -%}
+                {%- for value in filter.active_values -%}
+                  <facet-remove class="vfchip">
+                    <a href="{{ value.url_to_remove }}">
+                      {{- value.label | escape }}
+                      <span class="svg-wrapper" aria-hidden="true">
+                        {{- 'icon-vf-close.svg' | inline_asset_content -}}
+                      </span>
+                      <span class="visually-hidden">{{ 'products.facets.clear_filter' | t }}</span>
+                    </a>
+                  </facet-remove>
+                {%- endfor -%}
+                {%- assign price_active = false -%}
+                {%- if filter.type == 'price_range' -%}
+                  {%- if filter.min_value.value != nil -%}{%- assign price_active = true -%}{%- endif -%}
+                  {%- if filter.max_value.value != nil -%}{%- assign price_active = true -%}{%- endif -%}
+                {%- endif -%}
+                {%- if price_active -%}
+                  <facet-remove class="vfchip">
+                    <a href="{{ filter.url_to_remove }}">
+                      {%- if filter.min_value.value -%}
+                        {{ filter.min_value.value | money }}
+                      {%- else -%}
+                        {{ 0 | money }}
+                      {%- endif -%}
+                      &ndash;
+                      {%- if filter.max_value.value -%}
+                        {{ filter.max_value.value | money }}
+                      {%- else -%}
+                        {{ filter.range_max | money }}
+                      {%- endif -%}
+                      <span class="svg-wrapper" aria-hidden="true">
+                        {{- 'icon-vf-close.svg' | inline_asset_content -}}
+                      </span>
+                      <span class="visually-hidden">{{ 'products.facets.clear_filter' | t }}</span>
+                    </a>
+                  </facet-remove>
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- if collection.filters != empty -%}
+                {%- assign has_active = false -%}
+                {%- for filter in collection.filters -%}
+                  {%- if filter.active_values.size > 0 -%}{%- assign has_active = true -%}{%- endif -%}
+                  {%- if filter.type == 'price_range' -%}
+                    {%- if filter.min_value.value != nil -%}{%- assign has_active = true -%}{%- endif -%}
+                    {%- if filter.max_value.value != nil -%}{%- assign has_active = true -%}{%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+                {%- if has_active -%}
+                  <facet-remove class="vfchip vfchip--reset">
+                    <a href="{{ collection.url }}">{{ section.settings.label_reset | escape }}</a>
+                  </facet-remove>
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+
+            <div class="vftoolbar__right">
+          {%- endif -%}
+
           <div class="facet-filters sorting caption">
             <div class="facet-filters__field">
               <h2 class="facet-filters__label caption-large text-body">
@@ -93,6 +169,11 @@
             </h2>
             {%- render 'loading-spinner' -%}
           </div>
+
+          {%- if section.settings.vielfalt_layout and section.settings.enable_filtering -%}
+            </div>
+          {%- endif -%}
+          {%- if section.settings.vielfalt_layout -%}</div>{%- endif -%}
         </form>
       </facet-filters-form>
     {%- endif -%}
@@ -112,7 +193,8 @@
             enable_filtering: section.settings.enable_filtering,
             enable_sorting: section.settings.enable_sorting,
             filter_type: section.settings.filter_type,
-            paginate: paginate
+            paginate: paginate,
+            hide_active_facets: section.settings.vielfalt_layout
           %}
         </aside>
       {%- endif -%}
@@ -165,18 +247,38 @@
                     style="--animation-order: {{ forloop.index }};"
                   {% endif %}
                 >
-                  {% render 'card-product',
-                    card_product: product,
-                    media_aspect_ratio: section.settings.image_ratio,
-                    image_shape: section.settings.image_shape,
-                    show_secondary_image: section.settings.show_secondary_image,
-                    show_vendor: section.settings.show_vendor,
-                    show_rating: section.settings.show_rating,
-                    lazy_load: lazy_load,
-                    skip_styles: skip_card_product_styles,
-                    quick_add: section.settings.quick_add,
-                    section_id: section.id
-                  %}
+                  {%- if section.settings.vielfalt_layout -%}
+                    {% render 'card-vielfalt',
+                      card_product: product,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: section.settings.show_rating,
+                      show_secondary: section.settings.show_secondary_image,
+                      low_threshold: section.settings.low_threshold,
+                      tax_note: section.settings.tax_note,
+                      tax_link: section.settings.tax_link,
+                      label_from: section.settings.label_from,
+                      label_in_stock: section.settings.label_in_stock,
+                      label_out_stock: section.settings.label_out_stock,
+                      label_low: section.settings.label_low,
+                      label_sold_out: section.settings.label_sold_out,
+                      stock_suffix: section.settings.stock_suffix,
+                      badge_prefix: section.settings.badge_prefix,
+                      lazy: lazy_load
+                    %}
+                  {%- else -%}
+                    {% render 'card-product',
+                      card_product: product,
+                      media_aspect_ratio: section.settings.image_ratio,
+                      image_shape: section.settings.image_shape,
+                      show_secondary_image: section.settings.show_secondary_image,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: section.settings.show_rating,
+                      lazy_load: lazy_load,
+                      skip_styles: skip_card_product_styles,
+                      quick_add: section.settings.quick_add,
+                      section_id: section.id
+                    %}
+                  {%- endif -%}
                 </li>
                 {%- assign skip_card_product_styles = true -%}
               {%- endfor -%}
@@ -195,11 +297,65 @@
   {%- endif -%}
 </div>
 
+{%- if section.settings.vielfalt_layout -%}
+  <script>
+    // Hiding the filter column is a per-visitor convenience, so it is remembered
+    // in localStorage rather than in the URL. Guarded: private windows throw.
+    (function () {
+      var KEY = 'vielfalt:filters-collapsed';
+      var root = document.currentScript.previousElementSibling;
+      while (root && !root.classList.contains('collection--vf')) root = root.previousElementSibling;
+      if (!root) return;
+
+      function read() {
+        try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; }
+      }
+      function paint(off) {
+        root.classList.toggle('is-collapsed', off);
+        root.querySelectorAll('[data-vf-toggle-filters] .vftoggle__label').forEach(function (l) {
+          l.textContent = off ? l.dataset.off : l.dataset.on;
+        });
+      }
+      paint(read());
+
+      root.addEventListener('click', function (event) {
+        var btn = event.target.closest('[data-vf-toggle-filters]');
+        if (!btn) return;
+        var off = !root.classList.contains('is-collapsed');
+        try { localStorage.setItem(KEY, off ? '1' : '0'); } catch (e) {}
+        paint(off);
+      });
+    })();
+  </script>
+{%- endif -%}
+
 {% schema %}
 {
   "name": "t:sections.main-collection-product-grid.name",
   "class": "section",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "vielfalt_layout",
+      "label": "Vielfalt layout",
+      "info": "Sticky toolbar, collapsible filter column and the Vielfalt product card. Off falls back to Dawn.",
+      "default": true
+    },
+    { "type": "text", "id": "label_hide_filters", "label": "Hide-filters button", "default": "Filter ausblenden" },
+    { "type": "text", "id": "label_show_filters", "label": "Show-filters button", "default": "Filter anzeigen" },
+    { "type": "text", "id": "label_reset", "label": "Reset-filters link", "default": "Alle zur\u00fccksetzen" },
+    { "type": "header", "content": "Card content" },
+    { "type": "text", "id": "label_from", "label": "Price prefix for a price range", "default": "ab" },
+    { "type": "text", "id": "tax_note", "label": "Tax note", "default": "inkl. MwSt. zzgl." },
+    { "type": "text", "id": "tax_link", "label": "Tax note link text", "default": "Versandkosten" },
+    { "type": "text", "id": "label_in_stock", "label": "In stock", "default": "Auf Lager" },
+    { "type": "text", "id": "stock_suffix", "label": "Text after \"in stock\"", "info": "For example a delivery time. Only fill this in once the promise is one you can keep." },
+    { "type": "range", "id": "low_threshold", "min": 0, "max": 20, "step": 1, "label": "Low-stock threshold", "default": 5 },
+    { "type": "text", "id": "label_low", "label": "Low stock", "info": "[count] is replaced with the quantity left.", "default": "Nur noch [count] verf\u00fcgbar" },
+    { "type": "text", "id": "label_out_stock", "label": "Out of stock", "default": "Derzeit nicht verf\u00fcgbar" },
+    { "type": "text", "id": "label_sold_out", "label": "Sold-out badge", "default": "Ausverkauft" },
+    { "type": "text", "id": "badge_prefix", "label": "Custom badge tag prefix", "info": "Tag a product `badge:Bestseller` and the card shows a BESTSELLER badge.", "default": "badge:" },
+    { "type": "header", "content": "Grid" },
     {
       "type": "range",
       "id": "products_per_page",

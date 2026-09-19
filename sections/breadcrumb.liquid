@@ -18,6 +18,17 @@
     assign leaf = product.title
   elsif template.name == 'collection'
     assign leaf = collection.title
+    assign lead_product = collection.products.first
+    for tag in lead_product.tags
+      assign head = tag | slice: 0, 10
+      if head == 'abteilung:'
+        assign dept_handle = tag | remove_first: 'abteilung:'
+        break
+      endif
+    endfor
+    if dept_handle != collection.handle
+      assign dept = collections[dept_handle]
+    endif
   elsif template.name == 'page'
     assign leaf = page.title
   endif

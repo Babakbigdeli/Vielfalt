@@ -1,11 +1,29 @@
 {
   "sections": {
-    "banner": {
-      "type": "main-collection-banner",
+    "breadcrumb": {
+      "type": "breadcrumb",
       "settings": {
-        "show_collection_description": true,
-        "show_collection_image": false,
+        "home_label": "Startseite",
+        "aria_label": "Brotkrümelnavigation",
         "color_scheme": "scheme-1"
+      }
+    },
+    "head": {
+      "type": "collection-head",
+      "settings": {
+        "show_kicker": true,
+        "kicker_fallback": "",
+        "show_count": true,
+        "count_label": "Artikel",
+        "show_description": true,
+        "lede_first_paragraph": true,
+        "show_tiles": true,
+        "tile_filter_label": "Unterkategorie, Subcategory",
+        "tile_columns": 5,
+        "show_tile_images": true,
+        "color_scheme": "scheme-1",
+        "padding_top": 30,
+        "padding_bottom": 30
       }
     },
     "product-grid": {
@@ -17,20 +35,48 @@
         "image_ratio": "adapt",
         "image_shape": "default",
         "show_secondary_image": false,
-        "show_vendor": false,
-        "show_rating": false,
+        "show_vendor": true,
+        "show_rating": true,
         "quick_add": "none",
         "enable_filtering": true,
         "filter_type": "vertical",
         "enable_sorting": true,
         "columns_mobile": "2",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_top": 0,
+        "padding_bottom": 40,
+        "vielfalt_layout": true,
+        "label_hide_filters": "Filter ausblenden",
+        "label_show_filters": "Filter anzeigen",
+        "label_reset": "Alle zurücksetzen",
+        "label_from": "ab",
+        "tax_note": "inkl. MwSt. zzgl.",
+        "tax_link": "Versandkosten",
+        "label_in_stock": "Auf Lager",
+        "stock_suffix": "",
+        "low_threshold": 5,
+        "label_low": "Nur noch [count] verfügbar",
+        "label_out_stock": "Derzeit nicht verfügbar",
+        "label_sold_out": "Ausverkauft",
+        "badge_prefix": "badge:"
+      }
+    },
+    "text": {
+      "type": "collection-text",
+      "settings": {
+        "heading": "[collection] bei vielfalt",
+        "extra_text": "<p>Alle technischen Angaben stammen direkt aus den Herstellerdaten und werden automatisch aktualisiert. Zu jedem Artikel finden Sie das vollständige Datenblatt auf der Produktseite.</p>",
+        "brand_heading": "Marken in dieser Kategorie",
+        "brand_filter_label": "Marke, Brand, Hersteller",
+        "color_scheme": "scheme-1",
+        "padding_top": 44,
+        "padding_bottom": 44
       }
     }
   },
   "order": [
-    "banner",
-    "product-grid"
+    "breadcrumb",
+    "head",
+    "product-grid",
+    "text"
   ]
 }
