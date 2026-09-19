@@ -84,7 +84,14 @@
               assign thumb = nil
               if section.settings.show_tile_images and value.value != blank
                 for p in collection.products
-                  if p.tags contains value.value
+                  assign p_sub = p.metafields.custom.unterkategorie.value
+                  assign is_hit = false
+                  if p_sub == value.value
+                    assign is_hit = true
+                  elsif p.tags contains value.value
+                    assign is_hit = true
+                  endif
+                  if is_hit
                     assign thumb = p.featured_media.preview_image
                     break
                   endif

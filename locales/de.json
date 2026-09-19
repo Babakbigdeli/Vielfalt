@@ -198,12 +198,12 @@
       },
       "max_price": "Der höchste Preis ist {{ price }}",
       "product_count": {
-        "one": "{{ product_count }} von {{ count }} Produkt",
-        "other": "{{ product_count }} von {{ count }} Produkten"
+        "one": "{{ product_count }} von {{ count }} Artikel",
+        "other": "{{ product_count }} von {{ count }} Artikeln"
       },
       "product_count_simple": {
-        "one": "{{ count }} Produkt",
-        "other": "{{ count }} Produkte"
+        "one": "{{ count }} Artikel",
+        "other": "{{ count }} Artikel"
       },
       "reset": "Zurücksetzen",
       "sort_button": "Sortieren",

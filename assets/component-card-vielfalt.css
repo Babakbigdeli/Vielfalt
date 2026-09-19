@@ -2,6 +2,7 @@ product-recommendations.vfcards {
   display: block;
 }
 
+.vfcard,
 .vfcards {
   --vf-line: rgba(var(--color-foreground), 0.11);
   --vf-line-soft: rgba(var(--color-foreground), 0.06);

@@ -188,6 +188,12 @@
           id="main-collection-filters"
           data-id="{{ section.id }}"
         >
+          {%- if section.settings.vielfalt_layout and section.settings.enable_filtering -%}
+            <h2 class="vffilters__heading" id="verticalTitle" tabindex="-1">
+              {{- section.settings.label_filters | escape -}}
+            </h2>
+          {%- endif -%}
+
           {% render 'facets',
             results: collection,
             enable_filtering: section.settings.enable_filtering,
@@ -344,6 +350,7 @@
     { "type": "text", "id": "label_hide_filters", "label": "Hide-filters button", "default": "Filter ausblenden" },
     { "type": "text", "id": "label_show_filters", "label": "Show-filters button", "default": "Filter anzeigen" },
     { "type": "text", "id": "label_reset", "label": "Reset-filters link", "default": "Alle zur\u00fccksetzen" },
+    { "type": "text", "id": "label_filters", "label": "Filter column heading", "default": "Filter" },
     { "type": "header", "content": "Card content" },
     { "type": "text", "id": "label_from", "label": "Price prefix for a price range", "default": "ab" },
     { "type": "text", "id": "tax_note", "label": "Tax note", "default": "inkl. MwSt. zzgl." },
