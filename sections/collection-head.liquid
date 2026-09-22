@@ -10,27 +10,25 @@
       break
     endif
   endfor
-  assign dept = collections[dept_handle]
-  if dept.handle == collection.handle
-    assign dept = nil
+
+  assign is_department = false
+  if dept_handle == collection.handle
+    assign is_department = true
+  else
+    assign dept = collections[dept_handle]
   endif
 
-  assign want_labels = section.settings.tile_filter_label | downcase | replace: ', ', ',' | replace: ' ,', ',' | split: ','
-  assign tile_filter_found = false
-  for f in collection.filters
-    assign this_label = f.label | downcase | strip
-    for want in want_labels
-      assign want_label = want | strip
-      if this_label == want_label
-        assign tile_filter = f
-        assign tile_filter_found = true
+  assign cat_parent_found = false
+  if is_department and section.settings.show_category_links
+    assign menu = linklists[section.settings.menu]
+    for l in menu.links
+      if l.url == collection.url
+        assign cat_parent = l
+        assign cat_parent_found = true
         break
       endif
     endfor
-    if tile_filter_found
-      break
-    endif
-  endfor
+  endif
 
   assign lede_html = collection.description
   if section.settings.lede_first_paragraph and collection.description contains '</p>'
@@ -55,7 +53,7 @@
 
 <div class="cathead color-{{ section.settings.color_scheme }} gradient">
   <div class="cathead__inner page-width section-{{ section.id }}-padding">
-    {%- if section.settings.show_kicker -%}
+    {%- if section.settings.show_kicker and is_department == false -%}
       {%- if dept != blank and dept.handle != blank -%}
         <a class="cathead__kicker" href="{{ dept.url }}">{{ dept.title | escape }}</a>
       {%- elsif section.settings.kicker_fallback != blank -%}
@@ -76,53 +74,17 @@
       <div class="cathead__lede rte">{{ lede_html }}</div>
     {%- endif -%}
 
-    {%- if section.settings.show_tiles and tile_filter_found -%}
-      <ul class="subtiles list-unstyled" role="list" style="--vfc-tile-cols: {{ section.settings.tile_columns }}">
-        {%- for value in tile_filter.values -%}
-          {%- if value.count > 0 -%}
-            {%- liquid
-              assign thumb = nil
-              if section.settings.show_tile_images and value.value != blank
-                for p in collection.products
-                  assign p_sub = p.metafields.custom.unterkategorie.value
-                  assign is_hit = false
-                  if p_sub == value.value
-                    assign is_hit = true
-                  elsif p.tags contains value.value
-                    assign is_hit = true
-                  endif
-                  if is_hit
-                    assign thumb = p.featured_media.preview_image
-                    break
-                  endif
-                endfor
-              endif
-            -%}
-            <li>
-              <a class="subtile" href="{{ value.url_to_add }}">
-                <span class="subtile__media">
-                  {%- if thumb -%}
-                    <img
-                      src="{{ thumb | image_url: width: 120 }}"
-                      alt=""
-                      width="60"
-                      height="60"
-                      loading="lazy"
-                    >
-                  {%- else -%}
-                    {{ 'icon-vf-category.svg' | inline_asset_content }}
-                  {%- endif -%}
-                </span>
-                <span class="subtile__text">
-                  <span class="subtile__name">{{ value.label | escape }}</span>
-                  <span class="subtile__n">{{ value.count }} {{ section.settings.count_label | escape }}</span>
-                </span>
-                <span class="subtile__chev">{{ 'icon-vf-chevron.svg' | inline_asset_content }}</span>
-              </a>
-            </li>
-          {%- endif -%}
+    {%- if cat_parent_found and cat_parent.links.size > 0 -%}
+      <nav class="catpills" aria-label="{{ section.settings.links_aria | escape }}">
+        {%- for child in cat_parent.links -%}
+          <a class="catpill" href="{{ child.url }}">
+            {{- child.title | escape -}}
+            {%- if child.object.products_count > 0 -%}
+              <span>{{ child.object.products_count }}</span>
+            {%- endif -%}
+          </a>
         {%- endfor -%}
-      </ul>
+      </nav>
     {%- endif -%}
   </div>
 </div>
@@ -135,7 +97,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Kicker, title, product count, intro and the subcategory tiles. The department comes from the products' abteilung: tag and the tiles from the subcategory filter, so nothing needs filling in per collection."
+      "content": "Kicker, title, product count and intro. On a department page it also links down to that department's categories, taken from the main menu. Nothing needs filling in per collection."
     },
     { "type": "checkbox", "id": "show_kicker", "label": "Show the department above the title", "default": true },
     { "type": "text", "id": "kicker_fallback", "label": "Kicker when no department is found" },
@@ -146,32 +108,19 @@
       "type": "checkbox",
       "id": "lede_first_paragraph",
       "label": "Only the first paragraph",
-      "info": "Keeps the products near the top. Add the Collection text section below the grid for the full text.",
-      "default": true
+      "info": "Off shows the whole description, which is the only place it appears.",
+      "default": false
     },
-    { "type": "header", "content": "Subcategory tiles" },
+    { "type": "header", "content": "Category links" },
     {
       "type": "checkbox",
-      "id": "show_tiles",
-      "label": "Show subcategory tiles",
-      "info": "Nothing renders on collections without a matching filter.",
+      "id": "show_category_links",
+      "label": "Link to the categories on a department page",
+      "info": "Only renders on a department page, and only for categories that have a collection. Category pages show nothing here \u2014 the Unterkategorie filter already does that job.",
       "default": true
     },
-    {
-      "type": "text",
-      "id": "tile_filter_label",
-      "label": "Filter to build the tiles from",
-      "info": "Comma-separated. The first filter whose name matches wins, so you can list the German and English spellings while Search & Discovery still says one of them.",
-      "default": "Unterkategorie, Subcategory"
-    },
-    { "type": "range", "id": "tile_columns", "min": 2, "max": 6, "step": 1, "label": "Tiles per row on desktop", "default": 5 },
-    {
-      "type": "checkbox",
-      "id": "show_tile_images",
-      "label": "Use a product photo on each tile",
-      "info": "Takes the first product in that subcategory. Falls back to an icon.",
-      "default": true
-    },
+    { "type": "link_list", "id": "menu", "label": "Menu the categories come from", "default": "main-menu" },
+    { "type": "text", "id": "links_aria", "label": "Accessible label for the link row", "default": "Kategorien" },
     { "type": "header", "content": "Layout" },
     { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
     { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding top", "default": 32 },
