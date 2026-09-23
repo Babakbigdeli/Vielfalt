@@ -1,0 +1,201 @@
+{{ 'section-footer-vielfalt.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign trust_count = 0
+  assign menu_count = 0
+  for block in section.blocks
+    case block.type
+      when 'trust'
+        assign trust_count = trust_count | plus: 1
+      when 'menu'
+        assign menu_count = menu_count | plus: 1
+    endcase
+  endfor
+
+  assign copyright = section.settings.copyright
+  assign year = 'now' | date: '%Y'
+  assign copyright = copyright | replace: '[year]', year | replace: '[shop]', shop.name
+-%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<footer class="vffooter color-{{ section.settings.color_scheme }} gradient">
+  <div
+    class="vffooter__inner page-width section-{{ section.id }}-padding"
+    style="--vff-trust-cols: {{ trust_count | at_most: 4 }}; --vff-menu-cols: {{ menu_count | at_most: 4 }}; --vff-logo-width: {{ section.settings.logo_width }}px;"
+  >
+    {%- if trust_count > 0 -%}
+      <ul class="vftrust list-unstyled" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'trust' -%}
+            <li {{ block.shopify_attributes }}>
+              {%- if block.settings.icon != 'none' -%}
+                <span class="vftrust__ico" aria-hidden="true">
+                  {{- block.settings.icon | inline_asset_content -}}
+                </span>
+              {%- endif -%}
+              <div>
+                <b>{{ block.settings.heading | escape }}</b>
+                {%- if block.settings.text != blank -%}
+                  <span>{{ block.settings.text | escape }}</span>
+                {%- endif -%}
+              </div>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="vfcols">
+      <div class="vfbrand">
+        {%- if section.settings.logo_asset != blank -%}
+          <a class="vfbrand__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+            {{- section.settings.logo_asset | inline_asset_content -}}
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.about != blank -%}
+          <p class="vfbrand__text">{{ section.settings.about | escape }}</p>
+        {%- endif -%}
+
+        <ul class="vfcontact list-unstyled" role="list">
+          {%- if section.settings.phone != blank -%}
+            <li>
+              <span class="vftrust__ico" aria-hidden="true">{{ 'icon-vf-phone.svg' | inline_asset_content }}</span>
+              <a href="tel:{{ section.settings.phone | replace: ' ', '' | replace: '/', '' }}">
+                {{- section.settings.phone | escape -}}
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if section.settings.email != blank -%}
+            <li>
+              <span class="vftrust__ico" aria-hidden="true">{{ 'icon-vf-mail.svg' | inline_asset_content }}</span>
+              <a href="mailto:{{ section.settings.email }}">{{ section.settings.email | escape }}</a>
+            </li>
+          {%- endif -%}
+          {%- if section.settings.hours != blank -%}
+            <li>
+              <span class="vftrust__ico" aria-hidden="true">{{ 'icon-vf-clock.svg' | inline_asset_content }}</span>
+              <span>{{ section.settings.hours | escape }}</span>
+            </li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'menu' -%}
+          {%- assign menu = linklists[block.settings.menu] -%}
+          {%- if menu.links.size > 0 -%}
+            <div {{ block.shopify_attributes }}>
+              {%- if block.settings.heading != blank -%}
+                <h2>{{ block.settings.heading | escape }}</h2>
+              {%- endif -%}
+              <ul class="vfmenu list-unstyled" role="list">
+                {%- for link in menu.links -%}
+                  <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="vfbottom">
+      <span>{{ copyright }}</span>
+
+      {%- if section.settings.show_policies -%}
+        <ul class="vfbottom__links list-unstyled" role="list">
+          {%- for policy in shop.policies -%}
+            {%- if policy != blank -%}
+              <li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        <ul class="vfpay list-unstyled" role="list">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'vfpay__icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer (Vielfalt)",
+  "class": "section-vffooter",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The link columns come from your navigation menus, so they are edited under Content > Menus and stay in step with the rest of the shop. The payment icons and the policy links come from your store settings."
+    },
+    { "type": "text", "id": "logo_asset", "label": "Logo file", "info": "A file in the theme's assets folder. The footer sits on a dark background, so this should be the white lockup.", "default": "vielfalt-logo-white.svg" },
+    { "type": "range", "id": "logo_width", "min": 100, "max": 260, "step": 10, "unit": "px", "label": "Logo width", "default": 180 },
+    { "type": "textarea", "id": "about", "label": "About the shop", "default": "Ihr Onlineshop für Technik, Werkzeug und Haushalt. Geprüfte Qualität zu fairen Preisen, versandfertig aus der EU." },
+    { "type": "header", "content": "Contact" },
+    { "type": "text", "id": "phone", "label": "Phone" },
+    { "type": "text", "id": "email", "label": "Email" },
+    { "type": "text", "id": "hours", "label": "Opening hours" },
+    { "type": "header", "content": "Bottom bar" },
+    { "type": "text", "id": "copyright", "label": "Copyright line", "info": "[year] and [shop] are replaced automatically.", "default": "© [year] [shop] · Alle Preise inkl. gesetzlicher MwSt. zzgl. Versandkosten" },
+    { "type": "checkbox", "id": "show_policies", "label": "Show the store policy links", "default": true },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+    { "type": "header", "content": "Layout" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-3" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding top", "default": 0 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding bottom", "default": 0 }
+  ],
+  "blocks": [
+    {
+      "type": "trust",
+      "name": "Trust item",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "icon-truck.svg", "label": "Delivery" },
+            { "value": "icon-return.svg", "label": "Returns" },
+            { "value": "icon-lock.svg", "label": "Secure" },
+            { "value": "icon-vf-card.svg", "label": "Payment" },
+            { "value": "icon-vf-check.svg", "label": "Check" },
+            { "value": "icon-map-pin.svg", "label": "Location" },
+            { "value": "none", "label": "No icon" }
+          ],
+          "default": "icon-truck.svg"
+        },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Schneller Versand" },
+        { "type": "text", "id": "text", "label": "Text", "default": "1–3 Werktage Lieferzeit" }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Link column",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Sortiment" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+      ]
+    }
+  ]
+}
+{% endschema %}

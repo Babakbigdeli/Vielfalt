@@ -1,31 +1,86 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
     "footer": {
-      "type": "footer",
+      "type": "footer-vielfalt",
+      "blocks": {
+        "versand": {
+          "type": "trust",
+          "settings": {
+            "icon": "icon-truck.svg",
+            "heading": "Versand aus der EU",
+            "text": "Versandkostenfrei ab 49 €"
+          }
+        },
+        "zahlung": {
+          "type": "trust",
+          "settings": {
+            "icon": "icon-lock.svg",
+            "heading": "Sichere Zahlung",
+            "text": "SSL-verschlüsselt & DSGVO-konform"
+          }
+        },
+        "widerruf": {
+          "type": "trust",
+          "settings": {
+            "icon": "icon-return.svg",
+            "heading": "14 Tage Widerrufsrecht",
+            "text": "Gesetzliches Widerrufsrecht"
+          }
+        },
+        "methoden": {
+          "type": "trust",
+          "settings": {
+            "icon": "icon-vf-card.svg",
+            "heading": "Flexible Zahlung",
+            "text": "PayPal, Kreditkarte, SEPA"
+          }
+        },
+        "sortiment": {
+          "type": "menu",
+          "settings": {
+            "heading": "Sortiment",
+            "menu": "main-menu"
+          }
+        },
+        "service": {
+          "type": "menu",
+          "settings": {
+            "heading": "Service",
+            "menu": "service"
+          }
+        },
+        "rechtliches": {
+          "type": "menu",
+          "settings": {
+            "heading": "Rechtliches",
+            "menu": "rechtliches"
+          }
+        }
+      },
+      "block_order": [
+        "versand",
+        "zahlung",
+        "widerruf",
+        "methoden",
+        "sortiment",
+        "service",
+        "rechtliches"
+      ],
       "settings": {
+        "logo_asset": "vielfalt-logo-white.svg",
+        "logo_width": 180,
+        "about": "Ihr Onlineshop für Technik, Werkzeug und Haushalt. Geprüfte Qualität zu fairen Preisen, versandfertig aus der EU.",
+        "phone": "",
+        "email": "",
+        "hours": "",
+        "copyright": "© [year] [shop] · Alle Preise inkl. gesetzlicher MwSt. zzgl. Versandkosten",
+        "show_policies": true,
+        "show_payment_icons": true,
         "color_scheme": "scheme-3",
-        "newsletter_enable": true,
-        "newsletter_heading": "Subscribe to our emails",
-        "enable_follow_on_shop": true,
-        "show_social": true,
-        "enable_country_selector": true,
-        "enable_language_selector": true,
-        "payment_enable": true,
-        "show_policy": true,
-        "margin_top": 0,
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     }
   },
