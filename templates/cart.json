@@ -4,37 +4,88 @@
       "type": "main-cart-items",
       "settings": {
         "color_scheme": "scheme-1",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_top": 28,
+        "padding_bottom": 0,
+        "vielfalt_layout": true
       }
     },
     "cart-footer": {
       "type": "main-cart-footer",
       "settings": {
         "color_scheme": "scheme-1",
-        "padding_top": 20,
-        "padding_bottom": 40
+        "padding_top": 28,
+        "padding_bottom": 0,
+        "vielfalt_layout": true
       },
       "blocks": {
+        "trust-widerruf": {
+          "type": "trust",
+          "settings": {
+            "icon": "icon-return.svg",
+            "text": "14 Tage Widerrufsrecht"
+          }
+        },
+        "trust-ssl": {
+          "type": "trust",
+          "settings": {
+            "icon": "icon-lock.svg",
+            "text": "SSL-verschlüsselte Zahlung"
+          }
+        },
+        "trust-eu": {
+          "type": "trust",
+          "settings": {
+            "icon": "icon-map-pin.svg",
+            "text": "Versand aus der EU"
+          }
+        },
         "subtotal": {
           "type": "subtotal",
-          "settings": {
-          }
+          "settings": {}
         },
         "buttons": {
           "type": "buttons",
-          "settings": {
-          }
+          "settings": {}
         }
       },
       "block_order": [
+        "trust-widerruf",
+        "trust-ssl",
+        "trust-eu",
         "subtotal",
         "buttons"
       ]
+    },
+    "cart-recommendations": {
+      "type": "related-products-vielfalt",
+      "settings": {
+        "kicker": "Passend dazu",
+        "heading": "Das könnte Sie auch interessieren",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "intent": "related",
+        "link_prefix": "Alle",
+        "show_vendor": true,
+        "show_rating": true,
+        "show_secondary_image": false,
+        "label_from": "ab",
+        "tax_note": "inkl. MwSt. zzgl.",
+        "tax_link": "Versandkosten",
+        "label_in_stock": "Auf Lager",
+        "low_threshold": 5,
+        "label_low": "Nur noch [count] verfügbar",
+        "label_out_stock": "Derzeit nicht verfügbar",
+        "label_sold_out": "Ausverkauft",
+        "badge_prefix": "badge:",
+        "color_scheme": "scheme-1",
+        "padding_top": 44,
+        "padding_bottom": 56
+      }
     }
   },
   "order": [
     "cart-items",
-    "cart-footer"
+    "cart-footer",
+    "cart-recommendations"
   ]
 }

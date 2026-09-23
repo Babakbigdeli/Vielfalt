@@ -4,6 +4,7 @@
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
 {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
+{{ 'section-cart-vielfalt.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
   .section-{{ section.id }}-padding {
@@ -25,6 +26,125 @@
 
 <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
 
+{%- if section.settings.vielfalt_layout -%}
+{%- liquid
+  assign ship_threshold = section.settings.free_shipping_threshold | times: 100
+  assign ship_remaining = ship_threshold | minus: cart.total_price
+  assign ship_done = false
+  if ship_remaining <= 0
+    assign ship_done = true
+  endif
+
+  assign ship_pct = 0
+  if ship_threshold > 0
+    assign ship_pct = cart.total_price | times: 100 | divided_by: ship_threshold
+    if ship_pct > 100
+      assign ship_pct = 100
+    endif
+  endif
+
+  assign ship_left_money = ship_remaining | money
+  assign ship_goal_money = ship_threshold | money
+  assign ship_progress_title = section.settings.ship_progress_title | replace: '[amount]', ship_left_money
+  assign ship_progress_text = section.settings.ship_progress_text | replace: '[amount]', ship_goal_money
+
+  assign continue_url = section.settings.continue_url | default: routes.all_products_collection_url
+  assign empty_menu = linklists[section.settings.empty_menu]
+  assign count_text = section.settings.label_count | replace: '[count]', cart.item_count
+-%}
+
+<cart-items class="vfcart color-{{ section.settings.color_scheme }} gradient{% if cart == empty %} is-empty{% endif %}">
+  <div class="page-width section-{{ section.id }}-padding">
+    <div class="vfcart__head">
+      <h1 class="vfcart__title">{{ section.settings.heading | escape }}</h1>
+      {%- if cart != empty and count_text != blank -%}
+        <span class="vfcart__count">{{ count_text }}</span>
+      {%- endif -%}
+      <a class="vfcart__more" href="{{ continue_url }}">
+        {{- section.settings.continue_label | escape -}}
+        {{ 'icon-vf-chevron.svg' | inline_asset_content }}
+      </a>
+    </div>
+
+    <div class="vfempty">
+      <span class="vfempty__ico">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
+      <h2>{{ section.settings.empty_heading | escape }}</h2>
+      {%- if section.settings.empty_text != blank -%}
+        <p>{{ section.settings.empty_text | escape }}</p>
+      {%- endif -%}
+      <a class="button" href="{{ continue_url }}">{{ section.settings.empty_button | escape }}</a>
+
+      {%- if empty_menu.links.size > 0 -%}
+        <div class="vfempty__links">
+          {%- for link in empty_menu.links limit: section.settings.empty_links_count -%}
+            <a class="vfempty__pill" href="{{ link.url }}">{{ link.title | escape }}</a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if shop.customer_accounts_enabled and customer == null -%}
+        <p class="vfempty__login">
+          {{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}
+        </p>
+      {%- endif -%}
+    </div>
+
+    <form action="{{ routes.cart_url }}" class="vfcart__contents critical-hidden" method="post" id="cart">
+      <div id="main-cart-items" data-id="{{ section.id }}">
+        <div class="js-contents">
+          {%- if cart != empty -%}
+            {%- if section.settings.show_shipping_bar and ship_threshold > 0 -%}
+              <div class="vfship{% if ship_done %} vfship--done{% endif %}">
+                <span class="vfship__ico">{{ 'icon-truck.svg' | inline_asset_content }}</span>
+                <div>
+                  {%- if ship_done -%}
+                    <b>{{ section.settings.ship_done_title | escape }}</b>
+                    <span>{{ section.settings.ship_done_text | escape }}</span>
+                  {%- else -%}
+                    <b>{{ ship_progress_title }}</b>
+                    <span>{{ ship_progress_text }}</span>
+                    <i class="vfship__track"><i style="width: {{ ship_pct }}%"></i></i>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endif -%}
+
+            <ul class="vfcart__list" role="list">
+              {%- for item in cart.items -%}
+                {%- render 'cart-item-vielfalt',
+                  item: item,
+                  line: forloop.index,
+                  show_vendor: section.settings.show_vendor,
+                  show_sku: section.settings.show_sku,
+                  sku_prefix: section.settings.sku_prefix,
+                  show_stock: section.settings.show_stock,
+                  low_threshold: section.settings.low_threshold,
+                  label_in_stock: section.settings.label_in_stock,
+                  label_low: section.settings.label_low,
+                  label_out_stock: section.settings.label_out_stock,
+                  label_each: section.settings.label_each,
+                  label_remove: section.settings.label_remove
+                -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <p class="visually-hidden" id="cart-live-region-text" aria-live="polite" role="status"></p>
+      <p
+        class="visually-hidden"
+        id="shopping-cart-line-item-status"
+        aria-live="polite"
+        aria-hidden="true"
+        role="status"
+      >
+        {{ 'accessibility.loading' | t }}
+      </p>
+    </form>
+  </div>
+</cart-items>
+{%- else -%}
 <cart-items class="gradient color-{{ section.settings.color_scheme }} isolate{% if cart == empty %} is-empty{% else %} section-{{ section.id }}-padding{% endif %}">
   <div class="page-width">
     <div class="title-wrapper-with-link">
@@ -88,7 +208,6 @@
                   >
                     <td class="cart-item__media">
                       {% if item.image %}
-                        {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
                         <a href="{{ item.url }}" class="cart-item__link" aria-hidden="true" tabindex="-1"> </a>
                         <div class="cart-item__image-container gradient {% if item.parent_relationship.parent == null %}global-media-settings{% endif %}">
                           <img
@@ -456,11 +575,202 @@
     </form>
   </div>
 </cart-items>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "t:sections.main-cart-items.name",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "vielfalt_layout",
+      "label": "Use the Vielfalt cart layout",
+      "info": "Off falls back to Dawn's original table. Turn it on here and on the cart summary section together.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Head"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Warenkorb"
+    },
+    {
+      "type": "text",
+      "id": "label_count",
+      "label": "Item-count pill",
+      "info": "[count] is replaced with the number of items. Leave empty to hide the pill.",
+      "default": "[count] Artikel"
+    },
+    {
+      "type": "text",
+      "id": "continue_label",
+      "label": "Keep-shopping link",
+      "default": "Weiter einkaufen"
+    },
+    {
+      "type": "url",
+      "id": "continue_url",
+      "label": "Keep-shopping link target",
+      "info": "Leave empty to link to all products."
+    },
+    {
+      "type": "header",
+      "content": "Free-shipping bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_bar",
+      "label": "Show the free-shipping bar",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free-shipping threshold",
+      "info": "In your store currency, without the symbol. Set the same value on the cart summary section. 0 turns the bar off.",
+      "default": 49
+    },
+    {
+      "type": "text",
+      "id": "ship_progress_title",
+      "label": "Below the threshold",
+      "info": "[amount] is replaced with how much is still missing.",
+      "default": "Noch [amount] bis zum kostenlosen Versand"
+    },
+    {
+      "type": "text",
+      "id": "ship_progress_text",
+      "label": "Below the threshold, second line",
+      "info": "[amount] is replaced with the threshold.",
+      "default": "Ab [amount] liefern wir innerhalb Deutschlands kostenfrei."
+    },
+    {
+      "type": "text",
+      "id": "ship_done_title",
+      "label": "Threshold reached",
+      "default": "Versandkostenfrei"
+    },
+    {
+      "type": "text",
+      "id": "ship_done_text",
+      "label": "Threshold reached, second line",
+      "default": "Ihre Bestellung wird kostenlos innerhalb Deutschlands geliefert."
+    },
+    {
+      "type": "header",
+      "content": "Line content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show the brand",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "label": "Show the article number",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sku_prefix",
+      "label": "Article-number prefix",
+      "default": "Art.-Nr. "
+    },
+    {
+      "type": "text",
+      "id": "label_each",
+      "label": "Unit-price line",
+      "info": "Shown when a line has more than one item. [price] is replaced with the unit price.",
+      "default": "[price] pro Stück"
+    },
+    {
+      "type": "text",
+      "id": "label_remove",
+      "label": "Remove link",
+      "default": "Entfernen"
+    },
+    {
+      "type": "header",
+      "content": "Availability line"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stock",
+      "label": "Show the availability line",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "label_in_stock",
+      "label": "In stock",
+      "default": "Auf Lager"
+    },
+    {
+      "type": "range",
+      "id": "low_threshold",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "label": "Low-stock threshold",
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "label_low",
+      "label": "Low stock",
+      "info": "[count] is replaced with the quantity left.",
+      "default": "Nur noch [count] verfügbar"
+    },
+    {
+      "type": "text",
+      "id": "label_out_stock",
+      "label": "Out of stock",
+      "default": "Derzeit nicht verfügbar"
+    },
+    {
+      "type": "header",
+      "content": "Empty cart"
+    },
+    {
+      "type": "text",
+      "id": "empty_heading",
+      "label": "Heading",
+      "default": "Ihr Warenkorb ist leer"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_text",
+      "label": "Text",
+      "default": "Stöbern Sie in den Abteilungen oder suchen Sie gezielt nach einer Artikelnummer."
+    },
+    {
+      "type": "text",
+      "id": "empty_button",
+      "label": "Button",
+      "default": "Zum Sortiment"
+    },
+    {
+      "type": "link_list",
+      "id": "empty_menu",
+      "label": "Shortcut menu",
+      "info": "The first few links appear as pills under the button.",
+      "default": "main-menu"
+    },
+    {
+      "type": "range",
+      "id": "empty_links_count",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "label": "How many shortcuts",
+      "default": 3
+    },
     {
       "type": "color_scheme",
       "id": "color_scheme",
@@ -491,6 +801,7 @@
       "label": "t:sections.all.padding.padding_bottom",
       "default": 36
     }
-  ]
+  ],
+  "class": "vfcart-wrap"
 }
 {% endschema %}

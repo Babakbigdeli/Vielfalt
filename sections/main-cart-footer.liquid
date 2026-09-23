@@ -2,6 +2,7 @@
 {{ 'component-totals.css' | asset_url | stylesheet_tag }}
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 {{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+{{ 'section-cart-vielfalt.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
   .section-{{ section.id }}-padding {
@@ -17,6 +18,132 @@
   }
 {%- endstyle -%}
 
+{%- if section.settings.vielfalt_layout -%}
+{%- liquid
+  assign ship_threshold = section.settings.free_shipping_threshold | times: 100
+  assign ship_free = false
+  if ship_threshold > 0 and cart.total_price >= ship_threshold
+    assign ship_free = true
+  endif
+-%}
+
+<div
+  class="vfcart-sum color-{{ section.settings.color_scheme }} gradient{% if cart == empty %} is-empty{% endif %}"
+  id="main-cart-footer"
+  data-id="{{ section.id }}"
+>
+  <div class="page-width">
+    <aside class="vfsum section-{{ section.id }}-padding">
+      <div class="vfsum__box">
+        <h2 class="vfsum__heading">{{ section.settings.heading | escape }}</h2>
+
+        <div class="js-contents">
+          <div class="vfsum__row">
+            <span>{{ section.settings.label_subtotal | escape }}</span>
+            <span>{{ cart.items_subtotal_price | money }}</span>
+          </div>
+
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <div class="vfsum__row vfsum__row--discount">
+              <span>{{ discount.title | escape }}</span>
+              <span>&minus;{{ discount.total_allocated_amount | money }}</span>
+            </div>
+          {%- endfor -%}
+
+          {%- if section.settings.show_shipping_row -%}
+            <div class="vfsum__row{% if ship_free %} vfsum__row--free{% endif %}">
+              <span>{{ section.settings.label_shipping | escape }}</span>
+              <span>
+                {%- if ship_free -%}
+                  {{- section.settings.label_shipping_free | escape -}}
+                {%- else -%}
+                  {{- section.settings.label_shipping_calc | escape -}}
+                {%- endif -%}
+              </span>
+            </div>
+          {%- endif -%}
+
+          <div class="vfsum__total">
+            <span>{{ section.settings.label_total | escape }}</span>
+            <b>{{ cart.total_price | money }}</b>
+          </div>
+        </div>
+
+        {%- if section.settings.sum_note != blank -%}
+          <p class="vfsum__note">{{ section.settings.sum_note }}</p>
+        {%- endif -%}
+
+        <button
+          type="submit"
+          id="checkout"
+          class="button vfsum__checkout"
+          name="checkout"
+          form="cart"
+          {% if cart == empty %}
+            disabled
+          {% endif %}
+        >
+          {{ section.settings.label_checkout | escape }}
+        </button>
+
+        {%- if additional_checkout_buttons -%}
+          {%- if section.settings.label_express != blank -%}
+            <p class="vfsum__or">{{ section.settings.label_express | escape }}</p>
+          {%- endif -%}
+          <div class="vfsum__express cart__dynamic-checkout-buttons additional-checkout-buttons">
+            {{ content_for_additional_checkout_buttons }}
+          </div>
+        {%- endif -%}
+
+        {%- if settings.show_cart_note -%}
+          <cart-note class="vfsum__notefield field">
+            <label for="Cart-note">{{ 'sections.cart.note' | t }}</label>
+            <textarea
+              class="text-area field__input"
+              name="note"
+              form="cart"
+              id="Cart-note"
+              placeholder="{{ 'sections.cart.note' | t }}"
+            >{{ cart.note }}</textarea>
+          </cart-note>
+        {%- endif -%}
+
+        {%- assign trust_count = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'trust' -%}
+            {%- assign trust_count = trust_count | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if trust_count > 0 -%}
+          <ul class="vfsum__trust" role="list">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'trust' -%}
+                <li {{ block.shopify_attributes }}>
+                  {%- if block.settings.icon != 'none' -%}
+                    <span class="vfsum__ico">{{ block.settings.icon | inline_asset_content }}</span>
+                  {%- endif -%}
+                  <span>{{ block.settings.text | escape }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+          <ul class="vfsum__pay" role="list">
+            {%- for type in shop.enabled_payment_types -%}
+              <li>{{ type | payment_type_svg_tag: class: 'vfsum__payicon' }}</li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <div id="cart-errors" class="vfsum__errors"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+{%- else -%}
 <div
   class="gradient color-{{ section.settings.color_scheme }}{% if cart == empty %} is-empty{% endif %}"
   id="main-cart-footer"
@@ -132,12 +259,94 @@
     </div>
   </div>
 </div>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "t:sections.main-cart-footer.name",
-  "class": "cart__footer-wrapper",
+  "class": "vfcart-wrap",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "vielfalt_layout",
+      "label": "Use the Vielfalt cart layout",
+      "info": "Off falls back to Dawn's original footer. Turn it on here and on the cart items section together.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Zusammenfassung"
+    },
+    {
+      "type": "text",
+      "id": "label_subtotal",
+      "label": "Subtotal row",
+      "default": "Zwischensumme"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_row",
+      "label": "Show a shipping row",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "label_shipping",
+      "label": "Shipping row",
+      "default": "Versand"
+    },
+    {
+      "type": "text",
+      "id": "label_shipping_free",
+      "label": "Shipping, free",
+      "default": "Kostenlos"
+    },
+    {
+      "type": "text",
+      "id": "label_shipping_calc",
+      "label": "Shipping, not yet known",
+      "default": "im nächsten Schritt"
+    },
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free-shipping threshold",
+      "info": "In your store currency, without the symbol. Use the same value as on the cart items section.",
+      "default": 49
+    },
+    {
+      "type": "text",
+      "id": "label_total",
+      "label": "Total row",
+      "default": "Gesamtsumme"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "sum_note",
+      "label": "Note under the total",
+      "default": "inkl. gesetzlicher MwSt. · Rabattcodes werden im nächsten Schritt eingelöst."
+    },
+    {
+      "type": "text",
+      "id": "label_checkout",
+      "label": "Checkout button",
+      "default": "Zur Kasse"
+    },
+    {
+      "type": "text",
+      "id": "label_express",
+      "label": "Above the express buttons",
+      "info": "Only appears when express payment buttons are switched on in your payment settings.",
+      "default": "oder direkt bezahlen mit"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": true
+    },
     {
       "type": "color_scheme",
       "id": "color_scheme",
@@ -147,7 +356,7 @@
     {
       "type": "header",
       "content": "t:sections.all.padding.section_padding_heading"
-    },    
+    },
     {
       "type": "range",
       "id": "padding_top",
@@ -170,6 +379,55 @@
     }
   ],
   "blocks": [
+    {
+      "type": "trust",
+      "name": "Trust line",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "icon-return.svg",
+              "label": "Returns"
+            },
+            {
+              "value": "icon-lock.svg",
+              "label": "Secure"
+            },
+            {
+              "value": "icon-truck.svg",
+              "label": "Delivery"
+            },
+            {
+              "value": "icon-map-pin.svg",
+              "label": "Location"
+            },
+            {
+              "value": "icon-vf-card.svg",
+              "label": "Payment"
+            },
+            {
+              "value": "icon-vf-check.svg",
+              "label": "Check"
+            },
+            {
+              "value": "none",
+              "label": "No icon"
+            }
+          ],
+          "default": "icon-return.svg"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "14 Tage Widerrufsrecht"
+        }
+      ]
+    },
     {
       "type": "subtotal",
       "name": "t:sections.main-cart-footer.blocks.subtotal.name",

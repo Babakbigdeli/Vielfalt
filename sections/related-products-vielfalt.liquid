@@ -37,7 +37,7 @@
     class="vfcards page-width section-{{ section.id }}-padding"
     data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.products_to_show }}&intent={{ section.settings.intent }}"
     data-section-id="{{ section.id }}"
-    data-product-id="{{ product.id }}"
+    data-product-id="{{ product.id | default: cart.items.first.product.id }}"
   >
     {%- if recommendations.performed and recommendations.products_count > 0 -%}
       <div class="vfrel__head">
