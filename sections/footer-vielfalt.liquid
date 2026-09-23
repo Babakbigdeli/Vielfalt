@@ -62,7 +62,13 @@
       <div class="vfbrand">
         {%- if section.settings.logo_asset != blank -%}
           <a class="vfbrand__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
-            {{- section.settings.logo_asset | inline_asset_content -}}
+            <img
+              src="{{ section.settings.logo_asset | asset_url }}"
+              alt="{{ shop.name | escape }}"
+              width="1299"
+              height="325"
+              loading="lazy"
+            >
           </a>
         {%- endif -%}
 
@@ -70,6 +76,12 @@
           <p class="vfbrand__text">{{ section.settings.about | escape }}</p>
         {%- endif -%}
 
+        {%- assign has_contact = false -%}
+        {%- if section.settings.phone != blank or section.settings.email != blank or section.settings.hours != blank -%}
+          {%- assign has_contact = true -%}
+        {%- endif -%}
+
+        {%- if has_contact -%}
         <ul class="vfcontact list-unstyled" role="list">
           {%- if section.settings.phone != blank -%}
             <li>
@@ -92,6 +104,7 @@
             </li>
           {%- endif -%}
         </ul>
+        {%- endif -%}
       </div>
 
       {%- for block in section.blocks -%}
